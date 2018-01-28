@@ -1,5 +1,5 @@
 <template>
-  <div id='app'>
+  <div id='app' v-if='!hideUI'>
     <div v-if='!webGLEnabled'>
       <div class='absolute no-webgl'>
         <h4>WebGL is not enabled :(</h4>
@@ -8,7 +8,7 @@
       </div>
     </div>
 
-    <div class='controls-container' v-if='webGLEnabled' :style='getControlsContainerStyle()' ref='controls'>
+    <div class='controls-container' v-if='webGLEnabled ' :style='getControlsContainerStyle()' ref='controls'>
       <div class='controls'>
         <a href='#' @click.prevent='toggleSettings' class='action'>{{(settingsPanel.collapsed ? "Edit..." : "Close Editor")}}</a>
         <a href='#' @click.prevent='generateNewFunction'>Randomize</a>
@@ -18,9 +18,10 @@
           </svg>
         </a>
       </div>
-      <div class='settings' v-if='!settingsPanel.collapsed'>
+      <div class='settings' v-show='!settingsPanel.collapsed'>
         <div class='block' v-if='shaderCode'>
-          <div class='title'>Code</div>
+          <div class='title'>Code <a class='help-title' :class='{"syntax-visible": syntaxHelpVisible}' href='#' @click.prevent='syntaxHelpVisible = !syntaxHelpVisible' title='click to learn more about syntax'>syntax help</a></div>
+          <syntax v-if='syntaxHelpVisible' @close='syntaxHelpVisible = false'></syntax>
           <code-editor :model='shaderCode' ></code-editor>
         </div>
         <div class='block top-offset' v-if='shaderCode'>
@@ -39,6 +40,8 @@
 import CodeEditor from './components/CodeEditor';
 import Share from './components/Share';
 import About from './components/About';
+import HelpIcon from './components/HelpIcon';
+import Syntax from './components/Syntax';
 
 var MIN_SETTINGS_WIDTH = 456;
 var bus = require('./bus');
@@ -52,6 +55,8 @@ var scene = window.scene;
 export default {
   name: 'App',
   components: {
+    HelpIcon,
+    Syntax,
     CodeEditor,
     Share,
     About
@@ -72,6 +77,8 @@ export default {
   },
   data() {
     return {
+      syntaxHelpVisible: false,
+      hideUI: appState.hideUI,
       aboutVisible: false,
       width: MIN_SETTINGS_WIDTH,
       webGLEnabled: window.webGLEnabled,
@@ -90,6 +97,7 @@ export default {
     },
     toggleSettings() {
       this.settingsPanel.collapsed = !this.settingsPanel.collapsed;
+      bus.fire('settings-collapsed', this.settingsPanel.collapsed);
     },
     onSceneReady() {
       this.shaderCode = scene.codeEditorState;
@@ -102,6 +110,7 @@ export default {
     },
     generateNewFunction() {
       window.scene.codeEditorState.setCode(generateRandomScene());
+      window.scene.goToOrigin();
     },
   }
 }
@@ -111,6 +120,48 @@ export default {
 @import './styles/app.styl';
 @import './shared.styl';
 
+help-background = rgb(7, 12, 23);
+.help {
+  margin: -7px;
+  margin-bottom: 7px;
+  padding: 7px 7px 14px 7px;
+  background: help-background;
+}
+
+a.help-title {
+  float: right;
+  font-size: 12px;
+  font-style: italic;
+  color: #267fcd;
+  height: 30px;
+  margin: -5px;
+  padding: 7px;
+}
+a.syntax-visible {
+  background: help-background;
+  color: white;
+  font-style: normal;
+}
+
+a.help-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  margin-right: -7px;
+  svg {
+    fill: secondary-text;
+  }
+  &.open {
+    background: help-background;
+    svg {
+      fill: primary-text;
+    }
+  }
+}
+.row.help {
+  margin-top: 0;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -257,8 +308,13 @@ pre.error {
 
 a.about-link {
   position: absolute;
-  left: 7px;
-  bottom: 26px;
+  left: 0;
+  bottom: 0;
+  height: 42px;
+  padding-left: 7px;
+  display: flex;
+  align-items: center;
+  width: 83px;
 }
 
 @media (max-width: small-screen) {

@@ -38,9 +38,8 @@ function initScene(canvas) {
 
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-  var screenProgram = util.createProgram(gl, shader.vertexShader, shader.fragmentShader);
-  var quadBuffer = util.createBuffer(gl, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]));
-  util.bindAttribute(gl, quadBuffer, screenProgram.a_pos, 2);
+  var screenProgram, quadBuffer;
+//  var screenProgram = util.createProgram(gl, shader.vertexShader, shader.fragmentShader);
 
   listenToEvents();
 
@@ -55,7 +54,7 @@ function initScene(canvas) {
 
   window.scene = state;
 
-  var nextAnimationFrame = requestAnimationFrame(animate);
+  var nextAnimationFrame; // = requestAnimationFrame(animate);
 
   return state;
 
@@ -80,10 +79,17 @@ function initScene(canvas) {
     if (screenProgram) {
       screenProgram.unload();
     }
+
     startTime = window.performance.now();
     screenProgram = updateProgram;
+
+    quadBuffer = util.createBuffer(gl, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]));
+    util.bindAttribute(gl, quadBuffer, screenProgram.a_pos, 2);
+
     requestSizeUpdate = true;
     requestTransformUpdate = true;
+    
+    scheduleNextFrame();
 
     bus.fire('scene-ready', window.scene);
   }

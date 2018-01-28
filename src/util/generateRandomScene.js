@@ -94,7 +94,7 @@ function generateRandomScene() {
   }
 
   var zLine = combiner(firstArg, secondArg);
-  if (prob(0.2) && zLine.indexOf('tan') === -1) zLine = `c_inv(${zLine})`;
+  if (prob(0.2) && canInv(zLine)) zLine = `c_inv(${zLine})`;
   if (prob(0.1)) pArg = `c_inv(${pArg})`;
 
   lines.push(`
@@ -117,4 +117,10 @@ lines.push(`
   return length(${lLine}) * vec4(${selectedColor}, 1.0);
 }`);
   return lines.join('\n');
+}
+
+function canInv(zLine) {
+  // For some reason these function are not working well with c_inv
+  return zLine.indexOf('tan') === -1 &&
+        zLine.indexOf('sin') === -1;
 }

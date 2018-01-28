@@ -15,6 +15,7 @@ var settingsPanel = {
 
 module.exports = {
   settingsPanel,
+  hideUI: qs.get('hide-ui') !== undefined,
   getQS() { return qs; },
   saveCode,
   getCode,
