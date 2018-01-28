@@ -1,5 +1,5 @@
 vec4 get_color(vec2 p) {
-  vec2 z = vec2(0.); float t;
+  vec2 z = vec2(0.); float t = 0.;
 
   for(int i = 0; i < 32; ++i) {
     if (length(z) > 2.) break;

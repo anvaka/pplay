@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class='glsl-editor'>
   <codemirror v-model='model.code' ref='editor' :options="{
     viewportMargin: Infinity,
     theme: 'glsl',
@@ -70,3 +70,8 @@ function refreshEditor(isCollapsed) {
   }
 }
 </script>
+<style lang="stylus">
+.glsl-editor {
+@import "../styles/glsl-theme.styl"
+}
+</style>

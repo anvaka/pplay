@@ -110,7 +110,6 @@ export default {
 <style lang='stylus'>
 @import './styles/app.styl';
 @import './shared.styl';
-@import "./styles/glsl-theme.styl";
 
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

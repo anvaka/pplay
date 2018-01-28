@@ -77,7 +77,7 @@ function generateRandomScene() {
   var combiner = randomPicker(dualArgs);
   var lines = [
 'vec4 get_color(vec2 p) {',
-'  float t;'
+'  float t = 0.;'
   ]
   if(prob(0.4)) {
     lines.push(`  vec2 z = p;`);
