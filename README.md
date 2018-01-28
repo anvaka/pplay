@@ -2,7 +2,9 @@
 
 This website allows you to play with pixels on the screen using WebGL.
 You write just one function: `f(coordinate) => color` and it renders
-the scene. You can pan and zoom on the scene, similar to Google Maps.
+the scene. You can pan and zoom on the scene, similar to Google Maps:
+
+![demo](https://github.com/anvaka/pplay/wiki/images/panzoom-fractal.gif)
 
 Once you like what you've created - you can simply copy the link and
 share it with the world (e.g. [/r/pplay](https://www.reddit.com/r/pplay/)).
@@ -21,10 +23,10 @@ Variables are modeled after shadertoy.com conventions:
 // Current frame number, counted from launch of the program
 uniform float iFrame;
 
-// Current time in seconds, passed from the program launch
+// How many seconds passed since program launch
 uniform float iTime;
 
-// Mouse coordinates. `.xy` - current, `.zw` - last clicked.
+// Mouse (or touch) coordinates. `.xy` - current, `.zw` - last clicked.
 // Note: To translate coordinates to scene coordinates use 
 // screen2scene(iMouse.xy) -> vec2 method.
 uniform vec4 iMouse;

@@ -171,6 +171,7 @@ a.help-icon {
   margin-top: 14px;
 }
 .controls-container {
+  z-index: 1;
   position: absolute;
   max-height: 100%;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -319,7 +320,7 @@ a.about-link {
 
 @media (max-width: small-screen) {
   a.about-link {
-    bottom: 14px;
+    bottom: 0;
   }
 
   .controls-container {

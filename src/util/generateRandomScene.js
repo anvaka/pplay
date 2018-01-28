@@ -2,10 +2,17 @@ module.exports = generateRandomScene;
 
 var singleArgument = [
   '', '', '', '', '', '',
-  'c_tan',
   'c_sin',
-  'c_cos', 'c_tan', 'c_atan', 'c_conj', 'c_exp' 
+  'c_cos',
 ];
+
+// Tested on my old mobile device, it doesn't like some functions.
+// So, going to limit generator:
+var likelySlowDevice = window.innerWidth * window.innerHeight < 350 * 600;
+
+if (!likelySlowDevice) {
+  singleArgument = singleArgument.concat(['c_tan', 'c_tan', 'c_atan', 'c_conj', 'c_exp'])
+}
 
 var pArgFunctions = [
   '', '', '',
