@@ -37,9 +37,10 @@ function initScene(canvas) {
   var shader = createShaders(appState.getCode());
 
   gl.enable(gl.BLEND);
-  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+  // gl.clearColor(0, 0, 0, 1); // Not sure if I need this
   var screenProgram, quadBuffer;
-//  var screenProgram = util.createProgram(gl, shader.vertexShader, shader.fragmentShader);
 
   listenToEvents();
 
@@ -54,11 +55,14 @@ function initScene(canvas) {
 
   window.scene = state;
 
-  var nextAnimationFrame; // = requestAnimationFrame(animate);
+  var nextAnimationFrame;
 
   return state;
 
   function animate() {
+    // TODO: Do I need this?
+//    gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+
     nextAnimationFrame = 0;
     drawCurrentFrame();
     currentFrameNumber += 1;

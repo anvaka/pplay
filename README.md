@@ -11,6 +11,56 @@ share it with the world (e.g. [/r/pplay](https://www.reddit.com/r/pplay/)).
 
 # Example
 
+If you click "Randomize" button, the website will generate a fractal.
+
+![randomize demo](https://github.com/anvaka/pplay/wiki/images/randomize-demo.gif)
+
+It is very easy to generate a fractal with just couple lines. All you need to do
+is update a sum inside the loop.
+
+``` glsl
+vec4 get_color(vec2 p) {
+  float t = 0.;
+  vec2 z = vec2(0.);
+  vec2 c = p;
+
+  for(int i = 0; i < 32; ++i) {
+    if (length(z) > 2.) break;
+    // Change this line to get a new fractal
+    z = c_mul(z, z) + c;
+    t = float(i);
+  }
+
+  return length((z)) * vec4(t * vec3(1./64., 1./32., 1./24.), 1.0);
+}
+```
+
+Changing initial condition (variable `c`) or the final color code (where we return `vec4`)
+often yields in very different and beautiful fractals.
+
+Here are just a few examples. 
+
+[![zz](https://github.com/anvaka/pplay/wiki/images/zz.png)](https://anvaka.github.io/pplay/?tx=0&ty=0&scale=1&fc=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20p%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28z%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D&code=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20p%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28tanh%28z%29%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D)
+[![zz_tanh](https://github.com/anvaka/pplay/wiki/images/zz_tan.png)](https://anvaka.github.io/pplay/?tx=0&ty=0&scale=1&fc=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20p%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28c_tanh%28z%29%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D&code=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20p%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28tanh%28z%29%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D)
+![zz_p_mul](https://github.com/anvaka/pplay/wiki/images/zz_p_mul.png)(https://anvaka.github.io/pplay/?tx=0&ty=0&scale=1&fc=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20c_mul%28p%2C%20p%29%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28z%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D&code=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20c_mul%28p%2C%20p%29%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28%28z%29%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D)
+[![zz_inv_sin](https://github.com/anvaka/pplay/wiki/images/zz_inv_sin.png)](https://anvaka.github.io/pplay/?tx=0.30868306209760044&ty=0.34084580370748535&scale=0.35196627769233657&fc=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20c_inv%28p%29%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28c_sin%28z%29%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D&code=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20c_inv%28p%29%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28c_sin%28z%29%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D)
+
+Click on every image to explore fractal and try to find any difference between code - it is going to be very small.
+
+## Not only fractals
+
+But to be honest, this is a very generic tool. All it does is that one function - take a coordinate of a point,
+and output a color.
+
+Coordinate of a point is given by variable `vec2 p` - this is a point with two coordinates `p.x`, and `p.y`.
+
+The color output is returned from your function `return vec4(r, g, b, a)` - each component of this vector corresponds
+to color, and ranges between `0` and `1`. 
+
+Given this information, we can change the output to anything we want:
+
+
+
 # Extended functionality
 
 Pixel play comes with small library of functions and variables.
