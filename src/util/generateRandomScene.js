@@ -1,10 +1,10 @@
 module.exports = generateRandomScene;
 
 var singleArgument = [
-  '', '', '',
+  '', '', '', '', '', '',
   'c_tan',
   'c_sin',
-  'c_cos', 'c_tan', 'c_atan', 'c_conj', 'c_exp', 'c_sqrt', 'c_asin', 'c_acos'
+  'c_cos', 'c_tan', 'c_atan', 'c_conj', 'c_exp' 
 ];
 
 var pArgFunctions = [
@@ -42,18 +42,18 @@ function prob(p) { return random() < p; }
 
 function getRotation() {
   var rotationProbability = 0.5;
-  var pointRotationProb = 0.02;
+  var pointRotationProb = 0.5;
   var argRotationProb = .9;
 
   if (!prob(rotationProbability)) return;
 
   var frameRate = 600;
   var frameDef = `  float frames = ${frameRate}.;
-  float a = 3.14* 2. * mod(iFrame, frames)/frames;
+  float a = 3.14* 2. * bease(mod(iFrame, frames)/frames);
 `;
 
   if (prob(pointRotationProb)) {
-    frameDef += `  p = vec2(p.x*cos(a) - p.y * sin(a), p.y*cos(a) + p.x * sin(a));`
+    frameDef += `  c = vec2(p.x*cos(a) - p.y * sin(a), p.y*cos(a) + p.x * sin(a));`
     argRotationProb = 0.2
   }
 
@@ -73,12 +73,19 @@ function getRotation() {
 function generateRandomScene() {
   var firstArg = applyArgument(randomPicker(singleArgument), 'z');
   var secondArg = applyArgument(randomPicker(singleArgument), 'z');
-  var pArg = applyArgument(randomPicker(pArgFunctions), 'p');
+  var pArg = applyArgument(randomPicker(pArgFunctions), 'c');
   var combiner = randomPicker(dualArgs);
   var lines = [
 'vec4 get_color(vec2 p) {',
-'  vec2 z = vec2(0.); float t;'
+'  float t;'
   ]
+  if(prob(0.4)) {
+    lines.push(`  vec2 z = p;`);
+    lines.push(`  vec2 c = vec2(${(random()).toFixed(5)}, ${random().toFixed(5)});`)
+  } else {
+    lines.push(`  vec2 z = vec2(0.);`);
+    lines.push(`  vec2 c = p;`);
+  }
   var rotation = getRotation();
   if (rotation) {
     lines.push(rotation.frameDef);
@@ -87,6 +94,8 @@ function generateRandomScene() {
   }
 
   var zLine = combiner(firstArg, secondArg);
+  if (prob(0.2) && zLine.indexOf('tan') === -1) zLine = `c_inv(${zLine})`;
+  if (prob(0.1)) pArg = `c_inv(${pArg})`;
 
   lines.push(`
   for(int i = 0; i < 32; ++i) {
