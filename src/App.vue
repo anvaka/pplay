@@ -24,8 +24,9 @@
           <syntax v-if='syntaxHelpVisible' @close='syntaxHelpVisible = false'></syntax>
           <code-editor :model='shaderCode' ></code-editor>
         </div>
-        <div class='block top-offset' v-if='shaderCode'>
+        <div class='block top-offset status-bar' v-if='shaderCode'>
           <a href="#" @click.prevent='goToOrigin'>Go to origin</a>
+          <a href="?">Reset all</a>
         </div>
       </div>
       <div ref='left' class='left resize'></div>
@@ -242,6 +243,12 @@ pre.error {
   a.toggle-pause {
     flex: 0.3;
   }
+}
+.status-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 12px;
 }
 
 @media (max-width: small-screen) {
