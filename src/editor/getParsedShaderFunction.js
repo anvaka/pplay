@@ -1,5 +1,5 @@
 /**
- * This module parses user defined vector field code.
+ * This module parses user defined shader code.
  */
 
 var bus = require('../bus');
@@ -31,7 +31,7 @@ require.ensure('glsl-parser', () => {
 });
 
 /**
- * Given a string, verifies that it is a valid glsl code for a vector field,
+ * Given a string, verifies that it is a valid glsl code,
  * and then returns code + log.
  * 
  * @param {String} shaderCode 

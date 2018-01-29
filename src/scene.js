@@ -5,7 +5,7 @@
  * Its main responsibility is to manage life cycle of the WebGL app
  */
 var makePanzoom = require('panzoom');
-var createFractalCodeState = require('./editor/fractalCodeState');
+var createShaderCodeState = require('./editor/shaderCodeState');
 var bus = require('./bus');
 var util = require('./util/gl-utils');
 var createShaders = require('./util/createShaders');
@@ -77,7 +77,7 @@ function initScene(canvas) {
     // This is the main bit for the code. 
     // TODO: If someone wants to use scene independently, this needs to 
     // be less coupled with the application 
-    codeEditorState: createFractalCodeState(updateCode),
+    codeEditorState: createShaderCodeState(updateCode),
     goToOrigin,
     setActivityMonitorEnabled,
     dispose
