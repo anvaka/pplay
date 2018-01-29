@@ -38,14 +38,14 @@ vec4 get_color(vec2 p) {
 Changing initial condition (variable `c`) or the final color code (where we return `vec4`)
 often yields very different and beautiful fractals.
 
-Here are just a few examples. 
+Here are just a few examples. Click on any image above to explore fractal and try to find
+any difference between code - it is going to be very small.
 
 [![zz](https://github.com/anvaka/pplay/wiki/images/zz.png)](https://anvaka.github.io/pplay/?tx=0&ty=0&scale=1&fc=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20p%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28z%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D&code=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20p%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28tanh%28z%29%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D)
 [![zz_tanh](https://github.com/anvaka/pplay/wiki/images/zz_tan.png)](https://anvaka.github.io/pplay/?tx=0&ty=0&scale=1&fc=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20p%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28c_tanh%28z%29%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D&code=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20p%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28tanh%28z%29%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D)
 [![zz_p_mul](https://github.com/anvaka/pplay/wiki/images/zz_p_mul.png)](https://anvaka.github.io/pplay/?tx=0&ty=0&scale=1&fc=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20c_mul%28p%2C%20p%29%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28z%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D&code=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20c_mul%28p%2C%20p%29%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28%28z%29%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D)
 [![zz_inv_sin](https://github.com/anvaka/pplay/wiki/images/zz_inv_sin.png)](https://anvaka.github.io/pplay/?tx=0.30868306209760044&ty=0.34084580370748535&scale=0.35196627769233657&fc=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20c_inv%28p%29%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28c_sin%28z%29%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D&code=vec4%20get_color%28vec2%20p%29%20%7B%0A%20%20vec2%20z%20%3D%20vec2%280.%29%3B%20float%20t%20%3D%200.%3B%0A%0A%20%20for%28int%20i%20%3D%200%3B%20i%20%3C%2032%3B%20%2B%2Bi%29%20%7B%0A%20%20%20%20if%20%28length%28z%29%20%3E%202.%29%20break%3B%0A%20%20%20%20%2F%2F%20main%20fractal%20loop.%20Change%20it%3A%0A%20%20%20%20z%20%3D%20c_mul%28z%2C%20z%29%20%2B%20c_inv%28p%29%3B%0A%20%20%20%20t%20%3D%20float%28i%29%3B%0A%20%20%7D%0A%0A%20%20return%20length%28c_sin%28z%29%29%20*%20vec4%28t%2F64.%2C%20t%2F32.%2C%20t%2F24.%2C%201.0%29%3B%0A%7D)
 
-Click on any image above to explore fractal and try to find any difference between code - it is going to be very small.
 
 ## Not only fractals
 
@@ -54,7 +54,7 @@ and output a color.
 
 Coordinate of a point is given by variable `vec2 p`, so you can get `p.x`, and `p.y`.
 
-The color output is returned from the main function `return vec4(r, g, b, a)` - each component of this vector corresponds
+The color is returned from the main function `return vec4(r, g, b, a)` - each component of this vector corresponds
 to color, and ranges between `0` and `1`. 
 
 Given this information, we can change the output to anything we want:
@@ -63,8 +63,8 @@ Given this information, we can change the output to anything we want:
 
 Here we first set color to a blue-ish color `vec4(0.1, 0.2, 0.4, 1.)`, and then mixed it with coordinates of a point.
 
-I have also used a special variable called `iFrame` - it is always equal to the current frame number, and it is increasing
-with time. So we can use a periodic function like `sin` to get animation. You can find more special variables below
+I have also used a special variable called `iFrame` - it is always equal to the current frame number (increases
+with time). So we can use a periodic function like `sin` to get animation. You can find more special variables below
 
 # Extended functionality
 
@@ -72,7 +72,7 @@ Pixel play comes with small library of functions and variables.
 
 ## External variables
 
-Variables are modeled after shadertoy.com conventions:
+Variables are modeled after shadertoy.com conventions and are available for you to use in your code:
 
 ``` glsl
 // Current frame number, counted from launch of the program
@@ -92,20 +92,19 @@ uniform vec2 iResolution;
 
 ## Complex numbers math
 
-Each complex number here is 2d vector (`vec2` type). Standard multiplication/division rules cannot
+Each complex number is a 2d vector (`vec2` type). Standard GLSL multiplication/division rules cannot
 be applied to complex numbers, so we have a helper function: `c_mul(z1, z2)` and `c_div(z0, z1)` 
 multiplies and divides two complex numbers.
 
-Other trigonometry functions available with prefix `c_`. (e.g. `c_sin(z)`, `c_cos(z)`, `c_tanh(z)`, and so on).
+Other trigonometric functions are available with prefix `c_`. (e.g. `c_sin(z)`, `c_cos(z)`, `c_tanh(z)`, and so on).
 
-You can find list of all available functions [here](https://github.com/anvaka/pplay/blob/master/src/util/shaders/complex.glsl).
+You can find the list of them all [here](https://github.com/anvaka/pplay/blob/master/src/util/shaders/complex.glsl).
 
+# Thanks
 
-## Easing
+Thank you for reading this!
 
-For animation convenience I've added cubic Bezier easing function, modelled after `cubic-bezier` CSS
-property. 
-
+I hope you find this project useful and fun to play with. Please don't forget to share what you find or learn.
 
 ## Local build
 
@@ -116,3 +115,7 @@ npm install
 # serve with hot reload at localhost:8889
 npm start
 ```
+
+
+# License
+MIT

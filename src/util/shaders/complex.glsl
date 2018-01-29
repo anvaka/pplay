@@ -1,4 +1,6 @@
 // based on https://github.com/rust-num/num-complex/blob/master/src/lib.rs
+// Copyright 2013 The Rust Project Developers. MIT license
+// Ported to GLSL by Andrei Kashcha (github.com/anvaka), available under MIT license as well.
 float cosh(float val) {
   float tmp = exp(val);
   return (tmp + 1.0 / tmp) / 2.0;
