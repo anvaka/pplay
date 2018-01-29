@@ -1,9 +1,12 @@
+/**
+ * This is the main entry point into the application. It initializes
+ * scene first, and then asynchronously loads Vue app 
+ */
 var initScene = require('./scene');
-var config = require('./config');
 
 var canvas = document.getElementById('scene');
 // Canvas may not be available in test run
-if (canvas) initComplexPlay(canvas);
+if (canvas) initPixelPlay(canvas);
 
 // Tell webpack to split bundle, and download settings UI later.
 require.ensure('@/mainVue.js', () => {
@@ -11,16 +14,9 @@ require.ensure('@/mainVue.js', () => {
   require('@/mainVue.js');
 });
 
-function initComplexPlay(canvas) {
+function initPixelPlay(canvas) {
   var width = window.innerWidth;
   var height = window.innerHeight;
-  // if (config.isSmallScreen()) {
-  //   height -= config.sidebarHeight;
-  // } else {
-  //   // large screens have sidebar on the left, need to remove some space
-  //   // from canvas to account for the sidebar.
-  //   width -= config.sidebarWidth;
-  // }
   canvas.width = width;
   canvas.height =  height;
   var ctxOptions = {antialias: false};
@@ -31,9 +27,9 @@ function initComplexPlay(canvas) {
   if (gl) {
     window.webGLEnabled = true;
     var scene = initScene(canvas);
-    // scene.start();
     window.scene = scene;
   } else {
+    // The Vue App will notify error later, when loaded.
     window.webGLEnabled = false;
   }
 }

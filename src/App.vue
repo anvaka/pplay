@@ -1,5 +1,5 @@
 <template>
-  <div id='app' v-if='!hideUI'>
+  <div id='app' v-if='!hideUI' :class='{"is-active": scene.isActive}'>
     <div v-if='!webGLEnabled'>
       <div class='absolute no-webgl'>
         <h4>WebGL is not enabled :(</h4>
@@ -78,6 +78,7 @@ export default {
   },
   data() {
     return {
+      scene: scene,
       syntaxHelpVisible: false,
       hideUI: appState.hideUI,
       aboutVisible: false,
@@ -99,6 +100,9 @@ export default {
     toggleSettings() {
       this.settingsPanel.collapsed = !this.settingsPanel.collapsed;
       bus.fire('settings-collapsed', this.settingsPanel.collapsed);
+      // When settings panel is collapsed, we may also want to auto-hide
+      // all UI eventually.
+      this.scene.setActivityMonitorEnabled(this.settingsPanel.collapsed);
     },
     onSceneReady() {
       this.shaderCode = scene.codeEditorState;
@@ -164,9 +168,18 @@ a.help-icon {
   margin-top: 0;
 }
 #app {
+  opacity: 0;
+  transition-timing-function: ease-out;
+  transition: 2s;
+
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+#app.is-active {
+  opacity: 1;
+  transition: 200ms;
+  transition-timing-function: ease-out;
 }
 .top-offset {
   margin-top: 14px;

@@ -18,6 +18,7 @@ module.exports = {
   hideUI: qs.get('hide-ui') !== undefined,
   getQS() { return qs; },
   saveCode,
+  hasCode,
   getCode,
   getDefaultCode,
 
@@ -72,13 +73,4 @@ function getDefaultCode() {
 function saveCode(code) {
   qs.set({fc: code});
   currentState.code = code;
-}
-
-function defined(number) {
-  return Number.isFinite(number);
-}
-
-function clamp(x, min, max) {
-  return x < min ? min :
-        (x > max) ? max : x;
 }
