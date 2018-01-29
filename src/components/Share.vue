@@ -99,10 +99,12 @@ export default {
       this.isOpened = false;
       this.shortenState = 'canShorten';
       this.shouldShorten = false;
+      this.$emit('close');
     },
     openDialog() {
       this.isOpened = true;
       this.enteredUrl = getCurrentLink(false);
+      this.$emit('open');
     },
     selectAll(e) {
       e.target.select();
@@ -158,6 +160,7 @@ function getProviders() {
 
 .share-dialog {
   position: absolute;
+  z-index: 2;
   left: 0;
   top: 0;
   width: 100%;

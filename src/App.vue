@@ -1,5 +1,5 @@
 <template>
-  <div id='app' v-if='!hideUI' :class='{"is-active": scene.isActive}'>
+  <div id='app' v-if='!hideUI' :class='{"is-active": isActive}'>
     <div v-if='!webGLEnabled'>
       <div class='absolute no-webgl'>
         <h4>WebGL is not enabled :(</h4>
@@ -31,7 +31,7 @@
       </div>
       <div ref='left' class='left resize'></div>
     </div>
-    <share></share>
+    <share @close='shareVisible = false' @open='shareVisible = true'></share>
     <about @close='aboutVisible = false' v-if='aboutVisible'></about>
     <a href='#' @click.prevent='aboutVisible = !aboutVisible' class='about-link' title='click to learn more about this website'>about...</a>
   </div>
@@ -76,11 +76,17 @@ export default {
     bus.off('scene-ready', this.onSceneReady, this);
     window.removeEventListener('resize', this.updateControlsStyle, true);
   },
+  computed: {
+    isActive() {
+      return this.scene.isActive || this.aboutVisible || this.shareVisible;
+    },
+  },
   data() {
     return {
       scene: scene,
       syntaxHelpVisible: false,
       hideUI: appState.hideUI,
+      shareVisible: false,
       aboutVisible: false,
       width: MIN_SETTINGS_WIDTH,
       webGLEnabled: window.webGLEnabled,
@@ -131,21 +137,6 @@ help-background = rgb(7, 12, 23);
   margin-bottom: 7px;
   padding: 7px 7px 14px 7px;
   background: help-background;
-}
-
-a.help-title {
-  float: right;
-  font-size: 12px;
-  font-style: italic;
-  color: #267fcd;
-  height: 30px;
-  margin: -5px;
-  padding: 7px;
-}
-a.syntax-visible {
-  background: help-background;
-  color: white;
-  font-style: normal;
 }
 
 a.help-icon {
@@ -264,16 +255,6 @@ pre.error {
   font-size: 12px;
 }
 
-@media (max-width: small-screen) {
-  .controls {
-    a.share-btn {
-      flex: none;
-      display: flex;
-      width: 42px;
-    }
-  }
-}
-
 .settings {
   flex: 1;
   color: secondary-text;
@@ -283,7 +264,23 @@ pre.error {
   background: window-background;
   width: 100%;
   padding: 7px 7px 7px 7px;
+
+  a.help-title {
+    float: right;
+    font-size: 12px;
+    font-style: italic;
+    color: #267fcd;
+    height: 30px;
+    margin: -5px;
+    padding: 7px;
+  }
+  a.syntax-visible {
+    background: help-background;
+    color: white;
+    font-style: normal;
+  }
 }
+
 .settings.collapsed {
   display: none;
 }
@@ -339,6 +336,13 @@ a.about-link {
 }
 
 @media (max-width: small-screen) {
+  .controls {
+    a.share-btn {
+      flex: none;
+      display: flex;
+      width: 42px;
+    }
+  }
   a.about-link {
     bottom: 0;
   }
