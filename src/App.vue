@@ -1,5 +1,5 @@
 <template>
-  <div id='app' v-if='!hideUI' :class='{"is-active": isActive}'>
+  <div id='app' v-if='!hideUI' :class='{"is-active": isActive, started}'>
     <div v-if='!webGLEnabled'>
       <div class='absolute no-webgl'>
         <h4>WebGL is not enabled :(</h4>
@@ -70,6 +70,8 @@ export default {
       this.width += dx;
       if (this.width < MIN_SETTINGS_WIDTH) this.width = MIN_SETTINGS_WIDTH;
     });
+    // trigger smooth animation when first time loaded.
+    setTimeout(() => this.started = false);
   },
   beforeDestroy() {
     this.resizer.dispose();
@@ -83,6 +85,7 @@ export default {
   },
   data() {
     return {
+      started: true,
       scene: scene,
       syntaxHelpVisible: false,
       hideUI: appState.hideUI,
@@ -171,6 +174,9 @@ a.help-icon {
   opacity: 1;
   transition: 200ms;
   transition-timing-function: ease-out;
+}
+#app.started {
+  opacity: 0;
 }
 .top-offset {
   margin-top: 14px;

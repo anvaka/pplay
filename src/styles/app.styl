@@ -1,14 +1,7 @@
 canvas {
   position: absolute;
-  //left: 400px;
   left: 0;
   top: 0;
-  transition: left 200ms, top 200ms, opacity 300ms ease-in-out;
-}
-
-@keyframes pulse-out {
-    from { opacity: 1; }
-    to { opacity: 0; }
 }
 
 body {
@@ -251,48 +244,8 @@ body.dark-gray {
   );
 }
 
-
 body.drag-over .drop-help {
   display: flex;
-}
-
-body.sidebar-closed canvas {
-  left: 0;
-}
-
-#progress {
-  transition: opacity 200ms ease-in-out;
-  animation: blink 1500ms ease-in-out infinite alternate;
-  position: absolute;
-  top: 42px;
-  left: 0;
-  width: 392px;
-  font-size: 12px;
-  color: #eee;
-  opacity: 0;
-  z-index: 2;
-  text-align: center;
-  background: rgba(0, 0, 0, 0.22);
-  box-shadow: -1px 1px 4px rgba(0,0,0,0.8);
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-body.paused #progress {
-  pointer-events: none;
-}
-
-@keyframes blink {
-    from { background: rgba(0, 0, 0, 0.22); }
-    to { background: rgba(19, 41, 79, 0.7); }
-}
-
-#progress.error {
-  color: #6fbf0d;
-}
-#progress.error a {
-  color: white;
-  border-bottom: 1px dashed;
 }
 
 .drop-help {
@@ -309,14 +262,6 @@ body.paused #progress {
   pointer-events: none;
 }
 
-@media (max-width: 800px) {
-  canvas {
-    left: 0%;
-  }
-  #progress {
-    width: 100%;
-  }
-}
 * {
   box-sizing: border-box;
   -webkit-touch-callout: none;
@@ -325,7 +270,7 @@ body.paused #progress {
 }
 
 @media print {
-  #app, #progress {
+  #app {
     display: none;
   }
   canvas {
