@@ -68,7 +68,7 @@ function initScene(canvas) {
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-  // gl.clearColor(0, 0, 0, 1); // Not sure if I need this
+  gl.clearColor(0, 0, 0, 1); // Not sure if I need this
   var screenProgram, quadBuffer;
 
   // This is used by Vue app to communicate with the scene
@@ -90,7 +90,7 @@ function initScene(canvas) {
 
   function animate() {
     // TODO: Do I need this?
-    // gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+    gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
     nextAnimationFrame = 0;
     drawCurrentFrame();
     currentFrameNumber += 1;
