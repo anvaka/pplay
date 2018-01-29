@@ -86,11 +86,17 @@ function generateRandomScene() {
 'vec4 get_color(vec2 p) {',
 '  float t = 0.;'
   ]
+  var invertZ = prob(0.2);
   if(prob(0.4)) {
     lines.push(`  vec2 z = p;`);
     lines.push(`  vec2 c = vec2(${(random()).toFixed(5)}, ${random().toFixed(5)});`)
   } else {
-    lines.push(`  vec2 z = vec2(0.);`);
+    if (invertZ) {
+      // some video cards don't like to invert 0.
+      lines.push(`  vec2 z = vec2(1.);`);
+    } else {
+      lines.push(`  vec2 z = vec2(0.);`);
+    }
     lines.push(`  vec2 c = p;`);
   }
   var rotation = getRotation();
@@ -101,7 +107,7 @@ function generateRandomScene() {
   }
 
   var zLine = combiner(firstArg, secondArg);
-  if (prob(0.2) && canInv(zLine)) zLine = `c_inv(${zLine})`;
+  if (invertZ && canInv(zLine)) zLine = `c_inv(${zLine})`;
   if (prob(0.1)) pArg = `c_inv(${pArg})`;
 
   lines.push(`

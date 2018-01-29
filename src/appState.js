@@ -10,7 +10,7 @@ var defaultFractal = require('./util/shaders/main.glsl');
 
 var pendingSaveCallback;
 var settingsPanel = {
-  collapsed: isSmallScreen(),
+  collapsed: isSmallScreen() || hasCode(),
 };
 
 module.exports = {
@@ -23,6 +23,10 @@ module.exports = {
 
   saveTransform,
   getVisibleRectangle
+}
+
+function hasCode() {
+  return !!qs.get('fc');
 }
 
 function saveTransform(tx, ty, scale){
