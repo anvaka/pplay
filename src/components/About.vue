@@ -54,6 +54,7 @@ export default {
 
 .about {
   position: absolute;
+  z-index: 2;
   overflow-y: auto;
   top: 0;
   left: 0;
