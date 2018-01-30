@@ -127,7 +127,7 @@ function generateRandomScene() {
   var selectedColor = randomPicker(colors);
 
 lines.push(`
-  return length(${lLine}) * vec4(${selectedColor}, 1.0);
+  return vec4(length(${lLine}) * ${selectedColor}, 1.0);
 }`);
   return lines.join('\n');
 }

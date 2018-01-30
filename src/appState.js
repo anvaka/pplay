@@ -9,12 +9,35 @@
 var queryState = require('query-state');
 var bus = require('./bus');
 var isSmallScreen = require('./util/isSmallScreen');
+var loadGist = require('./util/loadGist');
 
 // This will load current state from the query string.
 var qs = queryState({}, { useSearch: true, });
-var currentState = qs.get();
 
 var defaultCode = require('./util/shaders/main.glsl');
+var currentCode = defaultCode; 
+
+var appStateReady;
+var protoGist = qs.get('gist');
+if (protoGist) {
+  loadGist(protoGist).then((code) => {
+    currentCode = code;
+    appState.ready = true;
+    appState.settingsPanel.collapsed = isSettingsPanelCollapsedInitially();
+    bus.fire('appstate-ready');
+  }).catch(err => {
+    console.error(err);
+    currentCode = defaultCode; 
+    appState.settingsPanel.loadError = err;
+    appState.settingsPanel.collapsed = false;
+    appState.ready = true;
+    bus.fire('appstate-ready');
+  });
+} else {
+  appStateReady = true
+
+  currentCode = qs.get('fc') || defaultCode;
+}
 
 // When user drags the scene, we don't want to immediately update the
 // query string. Some browsers would not respond well to high intensity.
@@ -22,16 +45,18 @@ var defaultCode = require('./util/shaders/main.glsl');
 // before previously scheduled timeout is executed)
 var pendingSaveCallback;
 
-module.exports = {
+var appState = {
   settingsPanel: {
     // By default we will not show settings panel on small screen, or if
     // there was a code in the query string - we just assume people want to
     // see the result. If they are curious - they would click "show editor" button
-    collapsed: isSmallScreen() || hasCode(),
+    collapsed: isSettingsPanelCollapsedInitially(),
+    codeLimitError: false,
+    loadError: null,
   },
   // If this one is present, the no UI will ever be shown. Good for iframe embedding
   hideUI: qs.get('hide-ui') !== undefined,
-
+  ready: appStateReady,
   /**
    * Request to save current code into query string
    */
@@ -64,7 +89,7 @@ module.exports = {
 }
 
 function hasCode() {
-  return !!qs.get('fc');
+  return currentCode !== defaultCode;
 }
 
 function saveTransform(tx, ty, scale){
@@ -97,18 +122,24 @@ qs.onChange(function() {
   bus.fire('scene-ready', window.scene);
 });
 
-function getCode() {
-  var fCode = qs.get('fc');
-  if (fCode) return fCode;
+function getCode() { return currentCode; }
 
-  return defaultCode;
-}
-
-function getDefaultCode() {
-  return defaultCode;
-}
+function getDefaultCode() { return defaultCode; }
 
 function saveCode(code) {
-  qs.set({fc: code});
-  currentState.code = code;
+  if (code.length > 1000) {
+    appState.settingsPanel.codeLimitError = true;
+    qs.unset('fc')
+  } else {
+    appState.settingsPanel.codeLimitError = false;
+    qs.set({fc: code});
+    qs.unset('gist');
+  }
+  currentCode = code;
 }
+
+function isSettingsPanelCollapsedInitially() {
+  return isSmallScreen() || hasCode();
+}
+
+module.exports = appState;

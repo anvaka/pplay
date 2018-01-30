@@ -23,6 +23,14 @@
           <div class='title'>Code <a class='help-title' :class='{"syntax-visible": syntaxHelpVisible}' href='#' @click.prevent='syntaxHelpVisible = !syntaxHelpVisible' title='click to learn more about syntax'>syntax help</a></div>
           <syntax v-if='syntaxHelpVisible' @close='syntaxHelpVisible = false'></syntax>
           <code-editor :model='shaderCode' ></code-editor>
+          <div class='code-limit' v-if='settingsPanel.codeLimitError'>
+            Warning, the length of the code exceeds what can be saved in the query string.
+            If you intend to share it, you will need to use `gist` parameter. <a href='https://github.com/anvaka/pplay#query-string-limit' target='_blank'>Read more here</a>.
+          </div>
+          <div class='gist-error' v-if='settingsPanel.loadError'>
+            We could not load the gist. Editor is set to default code. The error was:
+            <pre>{{settingsPanel.loadError}}</pre>
+          </div>
         </div>
         <div class='block top-offset status-bar' v-if='shaderCode'>
           <a href="#" @click.prevent='goToOrigin'>Go to origin</a>
@@ -51,7 +59,6 @@ var isSmallScreen = require('./util/isSmallScreen.js');
 var generateRandomScene = require('./util/generateRandomScene.js');
 
 var appState = require('./appState');
-var scene = window.scene;
 
 export default {
   name: 'App',
@@ -80,13 +87,14 @@ export default {
   },
   computed: {
     isActive() {
-      return this.scene.isActive || this.aboutVisible || this.shareVisible;
+      if (!this.scene) return false;
+      return (this.scene.isActive) || this.aboutVisible || this.shareVisible;
     },
   },
   data() {
     return {
       started: true,
-      scene: scene,
+      scene: window.scene,
       syntaxHelpVisible: false,
       hideUI: appState.hideUI,
       shareVisible: false,
@@ -94,7 +102,7 @@ export default {
       width: MIN_SETTINGS_WIDTH,
       webGLEnabled: window.webGLEnabled,
       settingsPanel: appState.settingsPanel,
-      shaderCode: scene.codeEditorState
+      shaderCode: window.scene && window.scene.codeEditorState
     }
   },
   methods: {
@@ -113,18 +121,19 @@ export default {
       // all UI eventually.
       this.scene.setActivityMonitorEnabled(this.settingsPanel.collapsed);
     },
-    onSceneReady() {
+    onSceneReady(scene) {
+      this.scene = scene
       this.shaderCode = scene.codeEditorState;
     },
     goToOrigin() {
-      scene.goToOrigin();
+      this.scene.goToOrigin();
     },
     openShareDialog() {
       bus.fire('open-share-dialog');
     },
     generateNewFunction() {
-      window.scene.codeEditorState.setCode(generateRandomScene());
-      window.scene.goToOrigin();
+      this.scene.codeEditorState.setCode(generateRandomScene());
+      this.scene.goToOrigin();
     },
   }
 }
@@ -220,10 +229,12 @@ a.help-icon {
 a {
   text-decoration: none;
 }
-pre.error {
+
+pre.error, .gist-error {
   background: #f52c5e;
   color: #ffff;
-  margin: 0;
+  margin: 0px -8px;
+  padding: 0 8px;
 }
 .controls {
   display: flex;
@@ -339,6 +350,13 @@ a.about-link {
   display: flex;
   align-items: center;
   width: 83px;
+}
+
+.code-limit {
+  font-size: 12px;
+  background: help-background;
+  margin: 12px -8px;
+  padding: 8px;
 }
 
 @media (max-width: small-screen) {

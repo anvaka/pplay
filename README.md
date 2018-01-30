@@ -103,6 +103,23 @@ Other trigonometric functions are available with prefix `c_`. (e.g. `c_sin(z)`, 
 
 You can find the list of them all [here](https://github.com/anvaka/pplay/blob/master/src/util/shaders/complex.glsl).
 
+# Query string limit
+
+By default your code is saved in the query string. However, if it exceeds `1,000` characters
+it cannot be saved (as browsers do not support long query strings). This shouldn't be a problem if you 
+don't want to share your code.
+
+But if you want to share what you've created you will need to save your code with `.glsl` extension
+on https://gist.github.com/ and then update the query string of the PixelPlay:
+
+1. Delete `fc` query argument (if present)
+2. Add `gist=gistId`
+
+When you save a gist it will give you the url like this: https://gist.github.com/anvaka/0f11251039eb366630bc7ca08ce0eefd 
+- those numbers are your `gistId`. The final url will look like this: 
+
+[https://anvaka.github.io/pplay/?gist=**0f11251039eb366630bc7ca08ce0eefd**&tx=0.284&ty=0.284&scale=0.471](https://anvaka.github.io/pplay/?gist=0f11251039eb366630bc7ca08ce0eefd&tx=0.284&ty=0.284&scale=0.471)
+
 # Thanks
 
 Thank you for reading this!

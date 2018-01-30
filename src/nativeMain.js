@@ -3,8 +3,10 @@
  * scene first, and then asynchronously loads Vue app 
  */
 var initScene = require('./scene');
+var appState = require('./appState');
+var bus = require('./bus');
 
-var canvas = document.getElementById('scene');
+var canvas = document.getElementById('scene-canvas');
 // Canvas may not be available in test run
 if (canvas) initPixelPlay(canvas);
 
@@ -26,10 +28,15 @@ function initPixelPlay(canvas) {
 
   if (gl) {
     window.webGLEnabled = true;
-    var scene = initScene(canvas);
-    window.scene = scene;
+    if (appState.ready) launch();
+    else bus.on('appstate-ready', launch)
   } else {
     // The Vue App will notify error later, when loaded.
     window.webGLEnabled = false;
   }
+}
+
+function launch() {
+  var scene = initScene(canvas);
+  window.scene = scene;
 }

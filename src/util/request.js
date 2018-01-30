@@ -37,7 +37,11 @@ module.exports = function request(url, options) {
 
     function transferComplete() {
       if (req.status !== 200) {
-        reject(`Unexpected status code ${req.status} when calling ${url}`);
+        reject({
+          err: `Unexpected status code ${req.status} when calling ${url}`,
+          response: req.response,
+          status: req.status
+        });
         return;
       }
       var response = req.response;
