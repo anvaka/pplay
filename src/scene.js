@@ -25,6 +25,7 @@ function initScene(canvas) {
   var cursor = {currentX: 0, currentY: 0, clickX: 0, clickY: 0};
   // Pass current frame number to shader as `iFrame`
   var currentFrameNumber = 0;
+  var orientation = {alpha: 0, beta: 0, gamma: 0, absolute: 0};
 
   // This will be updated by panzoom controller (see applyTransform)
   var sceneTransform = {x: 0, y: 0, z: 1};
@@ -48,6 +49,7 @@ function initScene(canvas) {
   // and in the frame renderer we address changes.
   var requestSizeUpdate = true;      // This means that screen size needs to be updated
   var requestTransformUpdate = true; // And this means that transforms are dirty
+  var orientationChanged = true;
 
   // This is used to auto-hide UI when there is no input. We only do this
   // when code editor is closed, and there was no user activity in HIDE_UI_THRESHOLD ms.
@@ -108,13 +110,17 @@ function initScene(canvas) {
 
     if (requestTransformUpdate) {
       requestTransformUpdate = false;
-      gl.uniform3f(screenProgram.u_transform, sceneTransform.x, sceneTransform.y, sceneTransform.z);
+      gl.uniform3f(screenProgram.iTransform, sceneTransform.x, sceneTransform.y, sceneTransform.z);
     }
 
     var iTime = window.performance.now() - startTime;
     gl.uniform1f(screenProgram.iTime, iTime/1000);
     gl.uniform1f(screenProgram.iFrame, currentFrameNumber);
     gl.uniform4f(screenProgram.iMouse, cursor.currentX, cursor.currentY, cursor.clickX, cursor.clickY);
+    if (orientationChanged) {
+      orientationChanged = false;
+      gl.uniform4f(screenProgram.iOrientation, orientation.alpha, orientation.beta, orientation.gamma, orientation.absolute);
+    }
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
 
@@ -207,6 +213,7 @@ function initScene(canvas) {
     window.removeEventListener('touchstart', onTouchStart, true);
     window.removeEventListener('touchmove', onTouchMove, true);
     window.removeEventListener('keydown', activate, true);
+    window.removeEventListener('deviceorientation', onOrientationChange, true);
 
     cancelAnimationFrame(nextAnimationFrame);
     setActivityMonitorEnabled(false);
@@ -220,6 +227,7 @@ function initScene(canvas) {
     window.addEventListener('touchstart', onTouchStart, true);
     window.addEventListener('touchmove', onTouchMove, true);
     window.addEventListener('keydown', activate, true);
+    window.addEventListener('deviceorientation', onOrientationChange, true);
 
     // We don't want to hide UI if there is no old code.
     if (appState.hasCode()) setActivityMonitorEnabled(true);
@@ -232,6 +240,14 @@ function initScene(canvas) {
 
     setClick(firstTouch.clientX, firstTouch.clientY);
     setHover(firstTouch.clientX, firstTouch.clientY);
+  }
+
+  function onOrientationChange(e) {
+    orientationChanged = true;
+    orientation.absolute = e.absolute;
+    orientation.alpha = Math.PI * e.alpha / 180;
+    orientation.beta = Math.PI * e.beta / 180;
+    orientation.gamma = Math.PI * e.gamma / 180;
   }
 
   function onTouchMove(e) {

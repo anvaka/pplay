@@ -6,15 +6,16 @@ module.exports = function getFragmentCode(main) {
 precision highp float;
 uniform float iFrame;
 uniform float iTime;
+uniform vec4 iOrientation;
 uniform vec4 iMouse;
-uniform vec3 u_transform;
+uniform vec3 iTransform;
 uniform vec2 iResolution;
 varying vec2 v_tex_pos;
 
 vec2 screen2scene(vec2 pos) {
   pos /= iResolution.xy;
   float ar = (iResolution.x/iResolution.y);
-  vec2 vt = 2.*(pos - u_transform.xy)/u_transform.z;
+  vec2 vt = 2.*(pos - iTransform.xy)/iTransform.z;
   return vec2(ar*(vt.x - 1.), 1. - vt.y);
 }
 
