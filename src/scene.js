@@ -9,6 +9,7 @@ var createShaderCodeState = require('./editor/shaderCodeState');
 var bus = require('./bus');
 var util = require('./util/gl-utils');
 var createShaders = require('./util/createShaders');
+var createChannelsState = require('./channelsState');
 var appState = require('./appState');
 
 var HIDE_UI_THRESHOLD = 2500; // if nothing happens in this many milliseconds - hide ui
@@ -73,6 +74,8 @@ function initScene(canvas) {
   gl.clearColor(0, 0, 0, 1); // Not sure if I need this
   var screenProgram, quadBuffer;
 
+  var channelsState = createChannelsState(gl);
+
   // This is used by Vue app to communicate with the scene
   var state = {
     isActive: true,
@@ -80,6 +83,7 @@ function initScene(canvas) {
     // TODO: If someone wants to use scene independently, this needs to 
     // be less coupled with the application 
     codeEditorState: createShaderCodeState(updateCode),
+    channelsState,
     goToOrigin,
     setActivityMonitorEnabled,
     dispose
@@ -112,6 +116,8 @@ function initScene(canvas) {
       requestTransformUpdate = false;
       gl.uniform3f(screenProgram.iTransform, sceneTransform.x, sceneTransform.y, sceneTransform.z);
     }
+
+    channelsState.render(screenProgram);
 
     var iTime = window.performance.now() - startTime;
     gl.uniform1f(screenProgram.iTime, iTime/1000);

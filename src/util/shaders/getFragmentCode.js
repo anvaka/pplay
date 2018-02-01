@@ -4,6 +4,8 @@ var bezier = require('./bezier.glsl');
 module.exports = function getFragmentCode(main) {
   var fragmentShader = `
 precision highp float;
+uniform sampler2D iChannel0, iChannel1, iChannel2, iChannel3;
+uniform vec2 iChannel0Res, iChannel1Res, iChannel2Res, iChannel3Res;
 uniform float iFrame;
 uniform float iTime;
 uniform vec4 iOrientation;

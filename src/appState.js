@@ -54,7 +54,7 @@ var appState = {
     codeLimitError: false,
     loadError: null,
   },
-  // If this one is present, the no UI will ever be shown. Good for iframe embedding
+    // If this one is present, the no UI will ever be shown. Good for iframe embedding
   hideUI: qs.get('hide-ui') !== undefined,
   ready: appStateReady,
   /**

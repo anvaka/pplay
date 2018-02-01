@@ -32,6 +32,7 @@
             <pre>{{settingsPanel.loadError}}</pre>
           </div>
         </div>
+        <!-- <channels class='block top-offset' :vm='channelsState'></channels> -->
         <div class='block top-offset status-bar' v-if='shaderCode'>
           <a href="#" @click.prevent='goToOrigin'>Go to origin</a>
           <a href="?">Reset all</a>
@@ -47,6 +48,7 @@
 
 <script>
 import CodeEditor from './components/CodeEditor';
+import Channels from './components/Channels';
 import Share from './components/Share';
 import About from './components/About';
 import HelpIcon from './components/HelpIcon';
@@ -64,6 +66,7 @@ export default {
   name: 'App',
   components: {
     HelpIcon,
+    Channels,
     Syntax,
     CodeEditor,
     Share,
@@ -102,7 +105,8 @@ export default {
       width: MIN_SETTINGS_WIDTH,
       webGLEnabled: window.webGLEnabled,
       settingsPanel: appState.settingsPanel,
-      shaderCode: window.scene && window.scene.codeEditorState
+      shaderCode: window.scene && window.scene.codeEditorState,
+      channelsState: window.scene && window.scene.channelsState
     }
   },
   methods: {
@@ -124,6 +128,7 @@ export default {
     onSceneReady(scene) {
       this.scene = scene
       this.shaderCode = scene.codeEditorState;
+      this.channelsState = scene.channelsState;
     },
     goToOrigin() {
       this.scene.goToOrigin();
@@ -196,12 +201,15 @@ a.help-icon {
   max-height: 100%;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 
-  border: 1px solid primary-border;
+  border: 1px solid secondary-border;
   border-left: none;
   border-top: none;
   overflow: hidden;
   flex-direction: column;
   display: flex;
+}
+.nodisplay {
+  display: none;
 }
 .no-webgl {
   width: 100%;
@@ -231,7 +239,7 @@ a {
 }
 
 pre.error, .gist-error {
-  background: #f52c5e;
+  background: severe-error-background;
   color: #ffff;
   margin: 0px -8px;
   padding: 0 8px;
@@ -247,7 +255,7 @@ pre.error, .gist-error {
     padding: 8px;
     display: flex;
     flex: 1;
-    border-left: 1px solid secondary-text;
+    border-left: 1px solid secondary-border;
     justify-content: center;
     align-items: center;
   }
@@ -277,7 +285,7 @@ pre.error, .gist-error {
   color: secondary-text;
   left: 0;
   overflow-y: auto;
-  border-top: 1px solid secondary-text;
+  border-top: 1px solid secondary-border;
   background: window-background;
   width: 100%;
   padding: 7px 7px 7px 7px;

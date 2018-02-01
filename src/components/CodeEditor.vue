@@ -72,6 +72,8 @@ function refreshEditor(isCollapsed) {
 </script>
 <style lang="stylus">
 .glsl-editor {
-@import "../styles/glsl-theme.styl"
+  @import "../styles/glsl-theme.styl"
+  
+  padding-bottom: 8px;
 }
 </style>
