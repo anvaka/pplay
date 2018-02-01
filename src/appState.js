@@ -85,11 +85,34 @@ var appState = {
   /**
    * Returns visible rectangle in screen coordinates.
    */
-  getVisibleRectangle
+  getVisibleRectangle,
+
+  // Channel persistence
+  addChannel,
+  removeChannel,
+  getActiveChannels
 }
 
 function hasCode() {
   return currentCode !== defaultCode;
+}
+
+function addChannel(unit, src) {
+  qs.set('i' + unit, src);
+}
+
+function removeChannel(unit) {
+  qs.unset('i' + unit);
+}
+
+function getActiveChannels() {
+  var active = [];
+  for(var unit = 0; unit < 3; ++unit) {
+    var src = qs.get('i' + unit);
+    if (src !== undefined) active.push({unit, src});
+  }
+
+  return active;
 }
 
 function saveTransform(tx, ty, scale){

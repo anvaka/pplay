@@ -48,7 +48,6 @@ export default {
   display: flex;
   flex-direction: row;
   height: 60px;
-  border-bottom: 1px solid;
   padding: 8px;
   margin: 0 -8px;
   align-items: center;

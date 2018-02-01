@@ -1,9 +1,10 @@
 <template>
-  <div class='channel-container secondary-border'>
-    <div class='title'>Channels</div>
-
+  <div class='channel-container'>
+    <div class='title'>Channels <a href="#" @click.prevent='toggleAddChannel' class='help-title' :class='{"syntax-visible": showAddChannel}'>add channel</a>
+    </div>
     <div v-if='showAddChannel'>
-      <div class='channel-picker'>
+      <div class='channel-picker help'>
+        <p>Channels allow your shader to access images (textures).</p>
         <div class='help-text secondary-color'>Paste image below or <label class='browse-btn primary-text' for="local-files-button">pick a file from your device</label></div>
         <form class='input-row' @submit.prevent='onSubmit' :class='{"focused": inputSelected}'>
           <input class='image-picker' type="text" placeholder="Paste image here" 
@@ -18,10 +19,13 @@
         <input type='file' id='local-files-button' class='nodisplay' name="file" multiple="" accept="image/*" @change='onFilePickerChanged'>
       </div>
     </div>
+    <div v-if='vm.list.length === 0 && !showAddChannel' class='no-channels'>
+      <p>Channels allow your shader to access images (textures). Click
+        <a href='#' @click.prevent='toggleAddChannel' class='active'>add channel</a> to add a new channel
+      </p>
+    </div>
 
-    <component v-for='channel in vm.list' :is='getChannelType(channel)' :vm='channel' @remove='remove(channel)'></component>
-
-    <a href="#" @click.prevent='addChannel' >Add channel</a>
+    <component v-for='channel in vm.list' :key='channel.unit' :is='getChannelType(channel)' :vm='channel' @remove='remove(channel)'></component>
   </div>
 </template>
 <script>
@@ -75,8 +79,8 @@ export default {
       this.showAddChannel = false;
       this.newInput = '';
     },
-    addChannel() {
-      this.showAddChannel = true;
+    toggleAddChannel() {
+      this.showAddChannel = !this.showAddChannel;
     },
     cancelAdd() {
       this.showAddChannel = false;
@@ -90,9 +94,9 @@ export default {
 
 <style lang="stylus">
 @import "../styles/app.styl"
+@import "../shared.styl"
 
 .channel-container {
-  border-top: 1px solid ;
   margin: 0 -8px;
   padding: 8px;
 }
@@ -106,9 +110,13 @@ export default {
   font-style: italic;
   margin: 8px 0;
 }
+.no-channels {
+  p {
+    font-size: 12px;
+    font-style: italic;
+  }
+}
 .channel-header {
-  border-top: 1px solid;
-  border-bottom: 1px solid;
   margin: 0 -8px;
   padding: 8px;
   a {
@@ -117,10 +125,14 @@ export default {
     display: inline-block;
   }
 }
+.add-channel {
+  font-size: 12px;
+  font-style: italic;
+}
+.add-channel.expanded {
+}
 .channel-picker {
-  border-top: 1px solid;
-  border-bottom: 1px solid;
-  margin: 0 -8px;
+  margin: -7px;
   padding: 8px;
 }
 </style>

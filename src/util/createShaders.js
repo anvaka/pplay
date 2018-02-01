@@ -8,7 +8,7 @@ function createShaders(main) {
     vertexShader: `
 precision highp float;
 attribute vec2 a_pos;
-uniform sampler2D iChannel0, iChannel1, iChannel2, iChannel3, iChannel4, iChannel5, iChannel6, iChannel7;
+uniform sampler2D iChannel0, iChannel1, iChannel2, iChannel3;
 uniform vec2 iChannel0Res, iChannel1Res, iChannel2Res, iChannel3Res;
 uniform float iFrame;
 uniform float iTime;
