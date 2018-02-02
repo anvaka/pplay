@@ -30,6 +30,7 @@
 </template>
 <script>
 import ImageChannel from './Channels/Image';
+import AudioChannel from './Channels/Audio';
 
 export default {
   name: 'Channels',
@@ -51,6 +52,8 @@ export default {
     getChannelType(channelViewModel) {
       if (channelViewModel.kind === 'image') {
         return ImageChannel;
+      } else if (channelViewModel.kind === 'audio') {
+        return AudioChannel;
       }
       throw new Error('Not implemented');
     },

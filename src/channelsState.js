@@ -1,7 +1,8 @@
-var eventify = require('ngraph.events');
 var loadImage = require('./util/loadImage');
 var glUtils = require('./util/gl-utils');
 var appState = require('./appState');
+var audioInput = require('./channels/audioInput');
+var isSoundCloud = require('./channels/isSoundCloud');
 
 module.exports = function (gl) {
   var takenUnits = new Set();
@@ -10,12 +11,12 @@ module.exports = function (gl) {
   // TODO: need to have internal list, so that vue does not interfere with performance
   var viewModels = [];
   var models = [];
-  var api = eventify({
+  var api = {
     list: viewModels,
     removeChannel,
     addChannel,
     render
-  });
+  };
 
   restoreState();
 
@@ -62,30 +63,36 @@ module.exports = function (gl) {
     // If we still don't have it, then...
     if (unit === undefined) throw new Error('All channels are busy');
 
-    if (isImage(src)) {
-      // TODO: I still haven't figured out a lot. This is a mess.
-      // Think of it as if it was a gradient descent to optimal solution, and the code below is step 0.
-      var input = imageInput(src, gl, unit);
-      var inputViewModel = {
-        kind: 'image',
-        name: `iChannel${unit}`,
-        unit,
-        error: null,
-        state: 'loading',
-        src: src,
-        model: input
-      };
-      viewModels.push(inputViewModel); 
-      models.push(input);
-      takenUnits.add(unit);
-      input.load().then(() => {
-        inputViewModel.state = 'ready'
-        appState.addChannel(unit, src);
-      }).catch(err => {
-        inputViewModel.state = 'error'
-        inputViewModel.error = err;
-      });
+    // TODO: I still haven't figured out a lot. This is a mess.
+    // Think of it as if it was a gradient descent to optimal solution, and the code below is step 0.
+    var input;
+    if (isSoundCloud(src)) {
+      input = audioInput(src, gl, unit);
+    } else if (isImage(src)) {
+      input = imageInput(src, gl, unit);
     } 
+
+    if (!input) throw new Error('not implemented');
+    models.push(input);
+    takenUnits.add(unit);
+
+    var inputViewModel = {
+      kind: input.kind,
+      name: `iChannel${unit}`,
+      unit,
+      error: null,
+      state: 'loading',
+      src: src,
+      model: input
+    };
+    viewModels.push(inputViewModel); 
+    input.load().then(() => {
+      inputViewModel.state = 'ready'
+      appState.addChannel(unit, src);
+    }).catch(err => {
+      inputViewModel.state = 'error'
+      inputViewModel.error = err;
+    });
   }
 
   function getAvailableUnit() {
@@ -107,6 +114,7 @@ function imageInput(value, gl, unit) {
   var resName = channelName + 'Res';
 
   var api = Object.freeze({
+    kind: 'image',
     unit,
     load,
     dispose,
@@ -119,11 +127,11 @@ function imageInput(value, gl, unit) {
     if (!texture) return;
 
     if (needsBinding) {
-      gl.activeTexture(gl.TEXTURE0 + unit);
-      gl.bindTexture(gl.TEXTURE_2D, texture);
 
       needsBinding = false;
     }
+    gl.activeTexture(gl.TEXTURE0 + unit);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
     // TODO: This probably could be optimized. E.g. re-read only when program has changed?
     gl.uniform1i(program[channelName], unit);
     gl.uniform2f(program[resName], width, height);
