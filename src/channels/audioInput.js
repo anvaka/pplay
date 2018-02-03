@@ -1,6 +1,6 @@
 var isSoundCloud = require('./isSoundCloud');
 var loadSoundCloudStream = require('./loadSoundCloudStream');
-var glUtil = require('../util/gl-utils');
+var binHistory = require('./binHistory');
 
 module.exports = audioInput;
 
@@ -16,7 +16,7 @@ function audioInput(value, gl, unit) {
   var channelName = 'iChannel' + unit;
   var resName = channelName + 'Res';
   var analyser;
-  var movingAverage = new Float32Array(fftSize);
+  var frequencyHistory = createBinHistoryArray(); // array of binHistory.
   var frequencyData = new Uint8Array(fftSize);
   var timeData = new Uint8Array(fftSize);
   var audioData;
@@ -32,6 +32,14 @@ function audioInput(value, gl, unit) {
   });
 
   return api;
+
+  function createBinHistoryArray() {
+    var result = [];
+    for (var i = 0; i < fftSize/2; ++i) {
+      result.push(binHistory());
+    }
+    return result;
+  }
 
   function load() {
     if (isSoundCloud(value)) {
@@ -54,8 +62,7 @@ function audioInput(value, gl, unit) {
 
     height = 2;
     width = 512;
-    audioData = new Uint8Array(width * height * 4); //analyser.frequencyBinCount);
-    console.log(analyser.frequencyBinCount)
+    audioData = new Uint8Array(width * height * 4); 
     audioTexture = createTexture(gl.LINEAR, audioData, width, height);
 
     player.setAttribute('src', streamUrl);
@@ -102,38 +109,68 @@ function audioInput(value, gl, unit) {
     if (!audioTexture) return;
 
     analyser.getByteFrequencyData(frequencyData);
-    analyser.getByteTimeDomainData(timeData);
 
+    var max = fftSize/2;
+    var maxBands = 4;
     var totalVolume = 0;
-    var totalLoValues = 0;
-    var loLimit = 20;
-    for (var i = 0; i < fftSize/2; ++i) {
-      var i4 = i * 4;
-      var f = frequencyData[i];
-      totalVolume += f/255;
-      if (75 < i && i < 75 + loLimit) {
-        totalLoValues += f/255;
+    // Sum up immediate sound
+    for (var band = 0; band < maxBands; ++band) {
+      var bandSize = Math.floor(max/maxBands);
+      var bandSum = 0;
+      for (var i = band * bandSize; i < (band + 1) * bandSize; ++i) {
+        bandSum += frequencyData[i];
       }
-      audioData[i4 + 0]  = f;
-      audioData[i4 + 1]  = (audioData[i4 + 1] * 4 + f)/5;
-      audioData[i4 + 2]  = (audioData[i4 + 2] * 9 + f)/10;
-      audioData[i4 + 3]  = (audioData[i4 + 3] * 49 +f)/50;
 
-      var i2 = 2 * i4;
-      var t = timeData[i];
-      audioData[i2 + 0]  = t;
-      audioData[i2 + 1]  = (audioData[i2 + 1] * 4 + t)/5;
-      audioData[i2 + 2]  = (audioData[i2 + 2] * 9 + t)/10;
-      audioData[i2 + 3]  = (audioData[i2 + 3] * 49 +t)/50;
+      // This is our immediate value for the band.
+      var immediateValue = Math.round(bandSum/bandSize);
+
+      var avgValue = audioData[band * 4 + 1];
+      // Let's do temporal blending.
+
+      // TODO: Do I need to adjust to frame rate?
+      var rate = 0.5; // (immediateValue > avgValue ? 0.2 : 0.5);
+      avgValue = avgValue * rate + immediateValue * (1 - rate);
+      
+      rate = 0.9;
+      var longAvg = audioData[band * 4 + 2];
+      longAvg = longAvg * rate + immediateValue * (1 - rate);
+
+      audioData[band * 4 + 0] = immediateValue;
+      audioData[band * 4 + 1] = Math.round(avgValue);
+      audioData[band * 4 + 2] = Math.round(longAvg);
+
+      // also get bass/mid/treble levels *relative to the past*
+      var immediateRelative = Math.abs(longAvg) < 0.001 ? 1 : immediateValue/longAvg;
+      var avgRelative = Math.abs(longAvg) < 0.001 ? 1 : avgValue / longAvg;
+
+      //audioData[band * 4 + 3] = avgRelative * 128;
+      audioData[band * 4 + 3] = immediateRelative * 128;
+      // audioData[(band + maxBands) * 4 + 0] = immediateValue;
+      // audioData[(band + maxBands) * 4 + 1] = immediateValue;
     }
+
 
     gl.activeTexture(gl.TEXTURE0 + unit);
     gl.bindTexture(gl.TEXTURE_2D, audioTexture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, audioData);
     gl.uniform1i(program[channelName], unit);
 
+    var avgBass = countFrequencies(0, 5);
+    var avgMedium = countFrequencies(200, 201);
     avgVolume = (avgVolume * 3 + 0.5*totalVolume/fftSize)/4;
-    loValues = (loValues * 4 + 0.5*totalLoValues/loLimit)/5;
-    gl.uniform2f(program[resName],  loValues, avgVolume);
+    gl.uniform2f(program[resName], avgBass, avgMedium);
+  }
+
+  function countFrequencies(from, to){
+    if (to >= fftSize/2) {
+      to = (fftSize/2 - 1);
+      from = to - (from - to);
+    }
+    var total = 0;
+    for (var i = from; i < to; ++i) {
+      total += frequencyHistory[i].getFrequencyRatio(frequencyData[i]);
+    }
+    total /= (to - from);
+    return Math.round(255*total);
   }
 }
