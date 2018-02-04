@@ -200,6 +200,23 @@ vec4 avg_Volume = getBandValue(510., mod(iFrame + 1., 2.) + 2.);
 vec4 avg_bass = getBandValue(498., mod(iFrame + 1., 2.) + 2.);
 ```
 
+Here is an example of the three histograms:
+
+[![histogram](https://github.com/anvaka/pplay/wiki/images/histogram.png)](https://anvaka.github.io/pplay/?tx=0.33865800703733256&ty=0.7389200405624718&scale=0.0015274641589542984&fc=vec4%20getBandValue%28float%20bandId%2C%20float%20row%29%20%7B%0A%20%20return%20texture2D%28iChannel0%2C%20vec2%28%28bandId%20%2B%200.5%29%2F512.%2C%20%28row%20%2B%200.5%29%2F4.%29%29%3B%0A%7D%0A%0Afloat%20sdRect%28vec2%20uv%2C%20vec2%20tl%2C%20vec2%20br%29%20%7B%0A%20%20%20%20vec2%20d%20%3D%20max%28tl-uv%2C%20uv-br%29%3B%0A%20%20%20%20return%20length%28max%28vec2%280.0%29%2C%20d%29%29%20%2B%20min%280.0%2C%20max%28d.x%2C%20d.y%29%29%3B%0A%7D%0A%0Afloat%20getHisto%28vec2%20p%2C%20float%20x%2C%20vec4%20imm%29%20%7B%0A%20%20float%20h1%20%3D%201.-sdRect%28p%2C%20vec2%28x%2C%200.%29%2C%20vec2%28x%2C%20256.*imm.r%29%29%3B%0A%20%20float%20h2%20%3D%201.-sdRect%28p%2C%20vec2%28x%2C%20280.%29%2C%20vec2%28x%2C%20280.%2B%20256.*imm.g%29%29%3B%0A%20%20float%20h3%20%3D%201.-sdRect%28p%2C%20vec2%28x%2C%20280.*2.%29%2C%20vec2%28x%2C%20280.*2.%2B%20256.*imm.b%29%29%3B%0A%20%20return%20h1%20*%20h2%20*%20h3%3B%0A%7D%0A%0Avec4%20get_color%28vec2%20p%29%20%7B%0A%20%20if%20%28p.x%20%3C%200.%20%7C%7C%20p.x%20%3E%202.*512.%29%20return%20vec4%280.%29%3B%0A%20%20float%20x%20%3D%20fract%28p.x%2F512.%29%20*%20512.%3B%0A%20%20vec4%20imm%20%3D%20getBandValue%28x%2C%20mod%28iFrame%20%2B%201.%2C%202.%29%29%3B%0A%20%20vec4%20agg%20%3D%20getBandValue%28x%2C%20mod%28iFrame%20%2B%201.%2C%202.%29%20%2B%202.%29%3B%0A%20%20%0A%20%20float%20h%20%3D%201.-getHisto%28vec2%28p.x%2C%20p.y%29%2C%20x%2C%20imm%29%20*%0A%20%20%20%20getHisto%28vec2%28p.x%2C%20p.y%29%2C%20x%20%2B%20512.%2C%20agg%29%3B%0A%0A%20%20return%20vec4%28h%2C%20h%2C%20h%2C%201.%29%3B%0A%7D&i0=https%3A%2F%2Fsoundcloud.com%2Ftomday%2Ftom-day-who-we-want-to-be)
+
+* The first row is a smoothed, long average (`b` component).
+* The second row is an average value (`g` component);
+* The last row is immediate value (`r` component)
+
+From left to right the histograms represent average value of the previous histogram:
+
+```
+original <- avg <- avg of avg <- avg of avg of avg ...
+```
+
+If you are using a desktop computer, you can click on the image above to open it and
+see interactive play. Why desktop? Because of the following caveat:
+
 ## Caveat
 
 Keep in mind, that Apple does not support audio element analysis in iOS. 
