@@ -1,7 +1,7 @@
 <template>
 <div>
   <span class='audio-title'>Audio is bound to <pre class='inline primary-text'>{{vm.name}}</pre>.
-  To learn how to use it, please <a ref='https://github.com/anvaka/pplay#audio-channel' class=''>read here</a>.
+  To learn how to use it, please <a href='https://github.com/anvaka/pplay#audio-channel' target='_blank' class=''>read here</a>.
   </span>
   <div class='audio-channel' v-show='audioReady'>
     <div class='audio-container'>
