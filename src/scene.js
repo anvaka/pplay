@@ -117,7 +117,7 @@ function initScene(canvas) {
       gl.uniform3f(screenProgram.iTransform, sceneTransform.x, sceneTransform.y, sceneTransform.z);
     }
 
-    channelsState.render(screenProgram);
+    channelsState.render(screenProgram, currentFrameNumber);
 
     var iTime = window.performance.now() - startTime;
     gl.uniform1f(screenProgram.iTime, iTime/1000);

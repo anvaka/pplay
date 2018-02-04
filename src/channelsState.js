@@ -30,9 +30,9 @@ module.exports = function (gl) {
     });
   }
 
-  function render(program) {
+  function render(program, frameNumber) {
     for (var i = 0; i < models.length; ++i) {
-      models[i].render(program);
+      models[i].render(program, frameNumber);
     }
   }
 
@@ -123,11 +123,10 @@ function imageInput(value, gl, unit) {
 
   return api;
 
-  function render(program) {
+  function render(program, frameNumber) {
     if (!texture) return;
 
     if (needsBinding) {
-
       needsBinding = false;
     }
     gl.activeTexture(gl.TEXTURE0 + unit);
