@@ -20,7 +20,7 @@ function audioInput(value, gl, unit) {
   var frequencyData = new Uint8Array(fftSize);
   //var timeData = new Uint8Array(fftSize);
 
-  var height = 2; // How many rows we have.
+  var height = 4; // How many rows we have.
   var width = 512; // 512 frequencies.
 
   // Two rows, 512 columns each. Each column is a frequency value;
@@ -127,6 +127,7 @@ function audioInput(value, gl, unit) {
     if (!audioTexture) return;
 
     analyser.getByteFrequencyData(frequencyData);
+    //for (var i = 0; i < frequencyData.length; ++i) frequencyData[i] = 1;
     var max = fftSize/2;
 
     // We are going to alternate between first and second row to
@@ -145,6 +146,42 @@ function audioInput(value, gl, unit) {
       audioData[ci] = immediateValue;
       audioData[ci + 1] = avgValue * 0.5 + immediateValue * 0.5;
       audioData[ci + 2] = longAvg * 0.9 + immediateValue * 0.1;
+    }
+
+    // TODO: This can be moved into upper array.
+    var prevAgg = prevPosition + 2 * max;
+    var currentAgg = currentPosition + 2 * max;
+    // now perform aggregation
+    for (var i = 0; i < max; i += 2) {
+      var p = (frequencyData[i] + frequencyData[i + 1])/2;
+      var aggOffset = (i/2 + currentAgg) * 4; // aggregation takes only first half
+      var pAggOffset = (i/2 + prevAgg) * 4; 
+
+      var aggAvgValue = audioData[pAggOffset + 1];
+      var aggLongAvg = audioData[pAggOffset + 2];
+
+      audioData[aggOffset] = p;
+      audioData[aggOffset + 1] = (aggAvgValue + p) * 0.5;
+      audioData[aggOffset + 2] = aggLongAvg * 0.9 + p * 0.1;
+    }
+
+    // aggregate aggregation. Note, this builds hierarchies of aggregation.
+    // [0..255] - built by previous loop, and contains avg between two source frequencies
+    // [256..256 + 128] - contains average between four source frequencies
+    // [384 .. 384 + 64] - averages between 8 source frequencies, and so on.
+    // The `(last element) - 1` of the array will be an overall average.
+    var halfMax = max/2;
+    for (var i = 0; i < max - 2; i += 2) {
+      var p = (audioData[(i + currentAgg) * 4] + audioData[(i + currentAgg + 1) * 4])*0.5;
+      var aggOffset = (halfMax + i/2 + currentAgg) * 4;
+      var pAggOffset = (halfMax + i/2 + prevAgg) * 4;
+
+      var aggAvgValue = audioData[pAggOffset + 1];
+      var aggLongAvg = audioData[pAggOffset + 2];
+
+      audioData[aggOffset] = p;
+      audioData[aggOffset + 1] = (aggAvgValue + p) * 0.5;
+      audioData[aggOffset + 2] = aggLongAvg * 0.9 + p * 0.1;
     }
 
     // // This is our immediate value for the band.
