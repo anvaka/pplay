@@ -32,7 +32,7 @@
             <pre>{{settingsPanel.loadError}}</pre>
           </div>
         </div>
-        <!-- <channels class='block top-offset' :vm='channelsState'></channels> -->
+        <channels class='block top-offset' :vm='channelsState'></channels>
         <div class='block top-offset status-bar' v-if='shaderCode'>
           <a href="#" @click.prevent='goToOrigin'>Go to origin</a>
           <a href="?">Reset all</a>

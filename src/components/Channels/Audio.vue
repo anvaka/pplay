@@ -1,15 +1,16 @@
 <template>
 <div>
+  <span class='audio-title'>Audio is bound to <pre class='inline primary-text'>{{vm.name}}</pre>.
+  To learn how to use it, please <a ref='https://github.com/anvaka/pplay#audio-channel' class=''>read here</a>.
+  </span>
   <div class='audio-channel' v-show='audioReady'>
     <div class='audio-container'>
       <audio ref='player' controls='' autoplay='' preload autobuffer></audio>
     </div>
-    <div class='info'>
-    </div>
     <a href='#' @click.prevent='remove' class='remove'>Remove</a>
   </div>
   <div v-if='vm.state === "loading"'>
-    Loading image into <pre>{{vm.name}}</pre>...
+    Loading audio into <pre class='inline primary-text'>{{vm.name}}</pre>...
   </div>
   <div v-if='vm.state === "error"' class='error'>
     Failed to load "{{vm.src}}".
@@ -50,29 +51,25 @@ export default {
   }
 }
 
-.image-channel {
+pre.inline {
+  display: inline;
+}
+.audio-title {
+  font-size: 12px;
+}
+
+.audio-channel {
   display: flex;
   flex-direction: row;
   height: 60px;
   padding: 8px;
   margin: 0 -8px;
   align-items: center;
-  .info {
+  .audio-container {
     flex: 1;
-    padding-left: 8px;
-    i {
-      font-family: monospace;
-      color: primary-text;
-    }
-  }
-  .img-container {
-    width: 60px;
-    display: flex;
-    align-items: baseline;
-
-    img {
+    padding: 0 8px 0 0;
+    audio {
       width: 100%;
-      height: auto;
     }
   }
   .remove {

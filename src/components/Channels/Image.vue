@@ -3,7 +3,7 @@
   <div class='image-channel' v-if='imageReady'>
     <div class='img-container'><img :src='vm.src'></div>
     <div class='info'>
-      <div>Texture name: <i>{{vm.name}}</i></div>
+      <div>Image is bound to <pre>{{vm.name}}</pre></div>
     </div>
     <a href='#' @click.prevent='remove' class='remove'>Remove</a>
   </div>
@@ -54,7 +54,8 @@ export default {
   .info {
     flex: 1;
     padding-left: 8px;
-    i {
+    pre {
+      display: inline;
       font-family: monospace;
       color: primary-text;
     }

@@ -184,33 +184,9 @@ function audioInput(value, gl, unit) {
       audioData[aggOffset + 2] = aggLongAvg * 0.9 + p * 0.1;
     }
 
-    // // This is our immediate value for the band.
-    // var immediateValue = Math.round(bandSum/bandSize);
-
-    // var avgValue = audioData[band * 4 + 1];
-    // // Let's do temporal blending.
-
-    // // TODO: Do I need to adjust to frame rate?
-    // var rate = 0.5; // (immediateValue > avgValue ? 0.2 : 0.5);
-    // avgValue = avgValue * rate + immediateValue * (1 - rate);
-    
-    // rate = 0.9;
-    // var longAvg = audioData[band * 4 + 2];
-    // longAvg = longAvg * rate + immediateValue * (1 - rate);
-
-    // audioData[band * 4 + 0] = immediateValue;
-    // audioData[band * 4 + 1] = Math.round(avgValue);
-    // audioData[band * 4 + 2] = Math.round(longAvg);
-
-    // // also get bass/mid/treble levels *relative to the past*
+    // We can also compute these in the shader
     // var immediateRelative = Math.abs(longAvg) < 0.001 ? 1 : immediateValue/longAvg;
     // var avgRelative = Math.abs(longAvg) < 0.001 ? 1 : avgValue / longAvg;
-
-    //audioData[band * 4 + 3] = avgRelative * 128;
-    // audioData[band * 4 + 3] = immediateRelative * 128;
-    // audioData[(band + maxBands) * 4 + 0] = immediateValue;
-    // audioData[(band + maxBands) * 4 + 1] = immediateValue;
-
 
     gl.activeTexture(gl.TEXTURE0 + unit);
     gl.bindTexture(gl.TEXTURE_2D, audioTexture);
@@ -218,18 +194,5 @@ function audioInput(value, gl, unit) {
     gl.uniform1i(program[channelName], unit);
 
     gl.uniform2f(program[resName], player.currentTime, player.duration);
-  }
-
-  function countFrequencies(from, to){
-    if (to >= fftSize/2) {
-      to = (fftSize/2 - 1);
-      from = to - (from - to);
-    }
-    var total = 0;
-    for (var i = from; i < to; ++i) {
-      total += frequencyHistory[i].getFrequencyRatio(frequencyData[i]);
-    }
-    total /= (to - from);
-    return Math.round(255*total);
   }
 }

@@ -5,9 +5,11 @@
     <div v-if='showAddChannel'>
       <div class='channel-picker help'>
         <p>Channels allow your shader to access images (textures).</p>
-        <div class='help-text secondary-color'>Paste image below or <label class='browse-btn primary-text' for="local-files-button">pick a file from your device</label></div>
+        <div class='help-text secondary-color'>Paste link to imgur image or soundcloud song below
+          <!-- below or <label class='browse-btn primary-text' for="local-files-button">pick a file from your device</label> -->
+          </div>
         <form class='input-row' @submit.prevent='onSubmit' :class='{"focused": inputSelected}'>
-          <input class='image-picker' type="text" placeholder="Paste image here" 
+          <input class='image-picker' type="text" placeholder="Paste link here" 
             v-model='newInput'
             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
             @focus='onInputFocused' @blur='inputSelected = false'>
@@ -60,14 +62,12 @@ export default {
     remove(channel) {
       this.vm.removeChannel(channel);
     },
-    onFilePickerChanged() {
-
-    },
     onInputFocused(e) {
       e.target.select();
       this.inputSelected = true;
     },
     onFilePickerChanged(e) {
+      // TODO: Implement me
       var files = e.target.files;
       loadInput(files[0]);
       // Try to reset the type
@@ -108,6 +108,9 @@ export default {
   flex-direction: row;
   justify-content: space-around;
 }
+.input-row .row {
+  margin-top: 8px;
+}
 .help-text {
   font-size: 12px;
   font-style: italic;
@@ -116,7 +119,9 @@ export default {
 .no-channels {
   p {
     font-size: 12px;
-    font-style: italic;
+    a {
+      font-style: italic;
+    }
   }
 }
 .channel-header {
@@ -137,5 +142,6 @@ export default {
 .channel-picker {
   margin: -7px;
   padding: 8px;
+  margin-bottom: 8px;
 }
 </style>

@@ -120,6 +120,86 @@ When you save a gist it will give you the url like this: https://gist.github.com
 
 [https://anvaka.github.io/pplay/?gist=**0f11251039eb366630bc7ca08ce0eefd**&tx=0.284&ty=0.284&scale=0.471](https://anvaka.github.io/pplay/?gist=0f11251039eb366630bc7ca08ce0eefd&tx=0.284&ty=0.284&scale=0.471)
 
+# Audio channel
+
+It is possible to make audio channel accessible to a shader. I'm still not sure what is the best way to model
+this (your suggestions are welcome), but here is how it is constructed now.
+
+Each of the `512` columns in the texture row represent a frequency, encoded in `rgba` format:
+
+* `r` - immediate frequency value
+* `g` - average frequency value (calculated as `g = prev_g * 0.5 + r * 0.5`)
+* `b` - "long" average frequency value (calculated as `b = 0.9 * prev_b + r * 0.1`)
+* `a` - is not used at the moment.
+
+Immediate value is usually very "spiky", while `b` is smoothed out.
+
+First two rows of the texture alternate between current and previous rendering frame. On odd frame number
+row `0` represent current audio buffer, and `1` is previous buffer. On even frame number this is inverse (
+current audio signal will be in the row `1`, while previous signal is in the row `0`). This alternation is
+done to preserve CPU cycles and not move data unnecessarily. 
+
+Rows `3` and `4` are also alternating between current and previous frame, but they serve as aggregation
+mechanism:
+
+* Columns `0 .. 255` store average value of frequency pairs. I.e. `column(i) = (freq[i] + freq[i + 1])/2`
+* Columns `256 .. 383` store average value of average pairs in the first `256` columns. I.e.
+`column(256 + i/2) = column(i) + column(i + 1) `
+* .. and so on ..
+
+For example, consider the following row of original frequencies:
+
+```
+Original row:    2    2    1    3    4    6    1    3
+ Aggregation:       2         2         5         2
+```
+
+As you can see, we only need four elements to store aggregated pairs of the first row, so, let's use remaining
+columns in the aggregation row, to aggregate aggregations:
+
+```
+       Aggregation:      2         2         5         2
+Aggregation (cont):            2                 3.5
+Aggregation (cont):                  2.75
+```
+
+Or, if we flatten aggregation row out:
+
+```
+Original row:    2    2    1    3    4    6    1    3
+ Aggregation:    2    2    5    2    2   3.5  2.75 nil
+```
+
+This aggregation row is created to avoid summation and cycles in the shader. If you need to know average volume
+of the sound, you can just look at second to the last value, you don't need to 
+
+```
+(2 + 2 + 1 + 3 + 4 + 6 + 1 + 3)/8 = 2.75
+```
+
+You just look at the second to the last column in the aggregation row. Here is a snippet to fetch audio frequency
+at a given column/row:
+
+``` glsl
+vec4 getBandValue(float bandId, float row) {
+  // assuming sound is bound to `iChannel0`
+  return texture2D(iChannel0, vec2((bandId + 0.5)/512., (row + 0.5)/4.));
+}
+// then you can use it like so:
+
+// This takes current frequency value in bin 42.
+vec4 imm = getBandValue(42., mod(iFrame + 1., 2.));
+// This takes previous frame frequency value in bin 42.
+vec4 imm_prev = getBandValue(42., mod(iFrame, 2.));
+
+// To get average volume of the current frame:
+vec4 avg_Volume = getBandValue(510., mod(iFrame + 1., 2.) + 2.);
+
+// To get average aggregated low frequency of the current frame (bass)
+// 498. = 512. - 2. - 4. - 8.
+vec4 avg_bass = getBandValue(498., mod(iFrame + 1., 2.) + 2.);
+```
+
 # Thanks
 
 Thank you for reading this!
