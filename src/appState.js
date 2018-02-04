@@ -53,6 +53,7 @@ var appState = {
     collapsed: isSettingsPanelCollapsedInitially(),
     codeLimitError: false,
     loadError: null,
+    audioWarning: false,
   },
     // If this one is present, the no UI will ever be shown. Good for iframe embedding
   hideUI: qs.get('hide-ui') !== undefined,
@@ -90,7 +91,15 @@ var appState = {
   // Channel persistence
   addChannel,
   removeChannel,
-  getActiveChannels
+  getActiveChannels,
+  setSoundIOSWarning
+}
+
+var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+function setSoundIOSWarning(isActive) {
+  if (!isIOS) return; // Only for iOS
+  appState.settingsPanel.audioWarning = isActive;
 }
 
 function hasCode() {

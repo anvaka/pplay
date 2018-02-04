@@ -123,7 +123,7 @@ When you save a gist it will give you the url like this: https://gist.github.com
 # Audio channel
 
 It is possible to make audio channel accessible to a shader. I'm still not sure what is the best way to model
-this (your suggestions are welcome), but here is how it is constructed now.
+this (your suggestions are appreciated!), but here is how it is constructed now.
 
 Each of the `512` columns in the texture row represent a frequency, encoded in `rgba` format:
 
@@ -199,6 +199,10 @@ vec4 avg_Volume = getBandValue(510., mod(iFrame + 1., 2.) + 2.);
 // 498. = 512. - 2. - 4. - 8.
 vec4 avg_bass = getBandValue(498., mod(iFrame + 1., 2.) + 2.);
 ```
+
+## Caveat
+
+Keep in mind, that Apple does not support audio element analysis in iOS. 
 
 # Thanks
 

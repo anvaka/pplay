@@ -5,7 +5,7 @@
   </span>
   <div class='audio-channel' v-show='audioReady'>
     <div class='audio-container'>
-      <audio ref='player' controls='' autoplay='' preload autobuffer></audio>
+      <audio ref='player' controls='' autoplay='true' preload autobuffer></audio>
     </div>
     <a href='#' @click.prevent='remove' class='remove'>Remove</a>
   </div>

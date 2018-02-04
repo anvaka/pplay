@@ -68,6 +68,7 @@ function audioInput(value, gl, unit) {
   function initPlayer(playerEl) {
     player = playerEl;
     player.crossOrigin = 'anonymous';
+    player.autoplay = true;
 
     var audioCtx = new (window.AudioContext || window.webkitAudioContext);
     analyser = audioCtx.createAnalyser();

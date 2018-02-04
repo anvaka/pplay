@@ -49,6 +49,13 @@ module.exports = function (gl) {
     viewModels.splice(viewModelIndex, 1);
     takenUnits.delete(channel.unit);
     appState.removeChannel(channel.unit);
+
+
+    var hasAudio = false;
+    models.forEach(m => { 
+      if (m.kind === 'audio') hasAudio = true;
+    })
+    appState.setSoundIOSWarning(hasAudio);
   }
 
   function addChannel(src, unit) {
@@ -68,6 +75,7 @@ module.exports = function (gl) {
     var input;
     if (isSoundCloud(src)) {
       input = audioInput(src, gl, unit);
+      appState.setSoundIOSWarning(true);
     } else if (isImage(src)) {
       input = imageInput(src, gl, unit);
     } 

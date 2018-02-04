@@ -18,6 +18,10 @@
           </svg>
         </a>
       </div>
+      <div v-if='settingsPanel.audioWarning' class='error'>
+        This scene uses audio, which is not supported by your browser.
+        Please open it on a desktop computer to explore.
+      </div>
       <div class='settings' v-show='!settingsPanel.collapsed'>
         <div class='block' v-if='shaderCode'>
           <div class='title'>Code <a class='help-title' :class='{"syntax-visible": syntaxHelpVisible}' href='#' @click.prevent='syntaxHelpVisible = !syntaxHelpVisible' title='click to learn more about syntax'>syntax help</a></div>
@@ -91,6 +95,7 @@ export default {
   computed: {
     isActive() {
       if (!this.scene) return false;
+      if (this.settingsPanel.audioWarning) return true;
       return (this.scene.isActive) || this.aboutVisible || this.shareVisible;
     },
   },
