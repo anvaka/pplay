@@ -1,3 +1,9 @@
+/**
+ * This is work in progress. Mostly loads soundcloud sound stream and makes
+ * it accessible via texture to a shared.
+ * 
+ * Read more here: https://github.com/anvaka/pplay#audio-channel
+ */
 var isSoundCloud = require('./isSoundCloud');
 var loadSoundCloudStream = require('./loadSoundCloudStream');
 var binHistory = require('./binHistory');
