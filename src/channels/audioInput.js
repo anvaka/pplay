@@ -7,6 +7,7 @@
 var isSoundCloud = require('./isSoundCloud');
 var loadSoundCloudStream = require('./loadSoundCloudStream');
 var binHistory = require('./binHistory');
+var appState = require('../appState');
 
 module.exports = audioInput;
 
@@ -66,7 +67,15 @@ function audioInput(value, gl, unit) {
 
   function load() {
     if (isSoundCloud(value)) {
-      return loadSoundCloudStream(value).then(url => streamUrl = url);
+      return loadSoundCloudStream(value)
+        .then(url => streamUrl = url)
+        .then(() => {
+          if (appState.hideUI) {
+            // in this mode, there is no vue app to initialize audio. Do it ourselves
+            var player = getOrMakePlayerEl();
+            return initPlayer(player);
+          }
+        });
     }
     throw new Error('non soundcloud files are not supported yet.');
   }
@@ -202,4 +211,18 @@ function audioInput(value, gl, unit) {
 
     gl.uniform2f(program[resName], player.currentTime, player.duration);
   }
+}
+
+function getOrMakePlayerEl() {
+  var playerEl = document.querySelector('audio');
+  if (playerEl) return playerEl;
+  playerEl = document.createElement('audio');
+  playerEl.preload = true;
+  playerEl.autobuffer = true;
+  playerEl.constrols = '';
+  // TODO: Better solution?
+  playerEl.style.visibility = 'hidden'
+
+  document.body.appendChild(playerEl);
+  return playerEl;
 }

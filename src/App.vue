@@ -121,7 +121,9 @@ export default {
       return {width: this.width + 'px'};
     },
     updateControlsStyle() {
-      this.$refs.controls.style.width = this.getControlsContainerStyle().width;
+      var controls = this.$refs.controls;
+      if (!controls) return; // Running in hide-ui=1 mode
+      controls.style.width = this.getControlsContainerStyle().width;
     },
     toggleSettings() {
       this.settingsPanel.collapsed = !this.settingsPanel.collapsed;
