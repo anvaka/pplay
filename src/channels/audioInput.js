@@ -14,18 +14,11 @@ module.exports = audioInput;
 function audioInput(value, gl, unit) {
   var fftSize = 1024;
   var audioTexture;
-  var isPlaying = false;
-  var needsBinding = true;
-  var audioFrame = 0;
-  var avgVolume = 0;
-  var loValues = 0;
   var channelName = 'iChannel' + unit;
   var resName = channelName + 'Res';
   var player;
   var analyser;
-  var frequencyHistory = createBinHistoryArray(); // array of binHistory.
   var frequencyData = new Uint8Array(fftSize);
-  //var timeData = new Uint8Array(fftSize);
 
   var height = 4; // How many rows we have.
   var width = 512; // 512 frequencies.
@@ -56,14 +49,6 @@ function audioInput(value, gl, unit) {
   });
 
   return api;
-
-  function createBinHistoryArray() {
-    var result = [];
-    for (var i = 0; i < fftSize/2; ++i) {
-      result.push(binHistory());
-    }
-    return result;
-  }
 
   function load() {
     if (isSoundCloud(value)) {
@@ -123,12 +108,9 @@ function audioInput(value, gl, unit) {
   }
 
   function onPlayerEnded() {
-    isPlaying = false;
   }
 
   function onPlayerStarted() {
-    audioFrame = 0;
-    isPlaying = true;
   }
 
   function dispose() {
