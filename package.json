@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "codemirror": "^5.33.0",
-    "ngraph.events": "0.0.4",
-    "panzoom": "^4.1.0",
+    "ngraph.events": "1.2.1",
+    "panzoom": "^9.4.1",
     "query-state": "^4.1.0",
     "raw-loader": "^0.5.1",
     "vue": "^2.5.2",

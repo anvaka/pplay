@@ -36,8 +36,6 @@ function initScene(canvas) {
   // Allow to pan and zoom the scene. The panzoom library
   // manages user actions, and actual translation happens in the shader.
   var panzoom = makePanzoom(gl.canvas, {
-    realPinch: true,
-    zoomSpeed: 0.035,
     controller: {
       applyTransform,
       getOwner() { return gl.canvas; },
