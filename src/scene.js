@@ -11,13 +11,14 @@ var util = require('./util/gl-utils');
 var createShaders = require('./util/createShaders');
 var createChannelsState = require('./channelsState');
 var appState = require('./appState');
+const getGL = require('./getGL');
 
 var HIDE_UI_THRESHOLD = 2500; // if nothing happens in this many milliseconds - hide ui
 
 module.exports = initScene;
 
 function initScene(canvas) {
-  var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  var gl = getGL(canvas);
   if (!gl) throw new Error('WebGL is not available');
 
   // This is used to track seconds since application start time.

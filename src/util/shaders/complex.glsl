@@ -1,36 +1,6 @@
 // based on https://github.com/rust-num/num-complex/blob/master/src/lib.rs
 // Copyright 2013 The Rust Project Developers. MIT license
 // Ported to GLSL by Andrei Kashcha (github.com/anvaka), available under MIT license as well.
-float cosh(float val) {
-  float tmp = exp(val);
-  return (tmp + 1.0 / tmp) / 2.0;
-}
- 
-float tanh(float val) {
-  float tmp = exp(val);
-  return (tmp - 1.0 / tmp) / (tmp + 1.0 / tmp);
-}
- 
-float sinh(float val) {
-  float tmp = exp(val);
-  return (tmp - 1.0 / tmp) / 2.0;
-}
-
-vec2 cosh(vec2 val) {
-  vec2 tmp = exp(val);
-  return(tmp + 1.0 / tmp) / 2.0;
-}
- 
-vec2 tanh(vec2 val) {
-  vec2 tmp = exp(val);
-  return (tmp - 1.0 / tmp) / (tmp + 1.0 / tmp);
-}
- 
-vec2 sinh(vec2 val) {
-  vec2 tmp = exp(val);
-  return (tmp - 1.0 / tmp) / 2.0;
-}
-
 vec2 c_one() { return vec2(1., 0.); }
 vec2 c_i() { return vec2(0., 1.); }
 
@@ -124,9 +94,9 @@ vec2 c_atan(vec2 c) {
   vec2 one = c_one();
   vec2 two = one + one;
   if (c == i) {
-    return vec2(0., 1./0.0);
+    return vec2(0., 1./1e-10);
   } else if (c == -i) {
-    return vec2(0., -1./0.0);
+    return vec2(0., -1./1e-10);
   }
 
   return c_div(
@@ -186,9 +156,9 @@ vec2 c_atanh(vec2 c) {
   vec2 one = c_one();
   vec2 two = one + one;
   if (c == one) {
-      return vec2(1./0., vec2(0.));
+      return vec2(1./1e-10, vec2(0.));
   } else if (c == -one) {
-      return vec2(-1./0., vec2(0.));
+      return vec2(-1./1e-10, vec2(0.));
   }
   return c_div(c_ln(one + c) - c_ln(one - c), two);
 }

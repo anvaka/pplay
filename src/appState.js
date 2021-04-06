@@ -55,6 +55,7 @@ var appState = {
     loadError: null,
     audioWarning: false,
   },
+  webgl2: false,
     // If this one is present, the no UI will ever be shown. Good for iframe embedding
   hideUI: qs.get('hide-ui') !== undefined,
   ready: appStateReady,

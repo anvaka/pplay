@@ -5,6 +5,7 @@
 var initScene = require('./scene');
 var appState = require('./appState');
 var bus = require('./bus');
+const getGL = require('./getGL');
 
 var canvas = document.getElementById('scene-canvas');
 // Canvas may not be available in test run
@@ -21,10 +22,7 @@ function initPixelPlay(canvas) {
   var height = window.innerHeight;
   canvas.width = width;
   canvas.height =  height;
-  var ctxOptions = {antialias: false};
-
-  var gl = canvas.getContext('webgl', ctxOptions) ||
-          canvas.getContext('experimental-webgl', ctxOptions);
+  var gl = getGL(canvas, {antialias: false});
 
   if (gl) {
     window.webGLEnabled = true;

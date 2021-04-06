@@ -5,6 +5,7 @@
 var bus = require('../bus');
 var pragmaParse = require('./pragmaParser');
 var getFragmentCode = require('../util/shaders/getFragmentCode');
+const appState = require('../appState');
 
 // This is naive parser that is being used until the real `glsl-parser`
 // is loaded asynchronously. This parser assumes there are no errors
@@ -50,7 +51,7 @@ module.exports = function getParsedShaderFunction(shaderCode) {
     parserResult.code = parsedCode;
     parserResult.main = shaderCode;
 
-    if (parserResult.log.errorCount) parserResult.error = parserError(parserResult.log);
+    if (parserResult.log.errorCount && !appState.webgl2) parserResult.error = parserError(parserResult.log);
 
     return parserResult;
   });

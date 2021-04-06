@@ -31,7 +31,7 @@ function processLineByLine(code) {
 
   lines.forEach((line, index) => {
     currentIndex = index;
-    if (line && line[0] === '#') {
+    if (line && (line[0] === '#' && line[1] !== 'v')) {
       outputLines.push('');
       processPragma(line);
     } else {

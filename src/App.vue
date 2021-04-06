@@ -24,7 +24,7 @@
       </div>
       <div class='settings' v-show='!settingsPanel.collapsed'>
         <div class='block' v-if='shaderCode'>
-          <div class='title'>Code <a class='help-title' :class='{"syntax-visible": syntaxHelpVisible}' href='#' @click.prevent='syntaxHelpVisible = !syntaxHelpVisible' title='click to learn more about syntax'>syntax help</a></div>
+          <div class='title'>Code <span v-if='webgl2' class='wgl2'>WebGL 2</span><a class='help-title' :class='{"syntax-visible": syntaxHelpVisible}' href='#' @click.prevent='syntaxHelpVisible = !syntaxHelpVisible' title='click to learn more about syntax'>syntax help</a></div>
           <syntax v-if='syntaxHelpVisible' @close='syntaxHelpVisible = false'></syntax>
           <code-editor :model='shaderCode' ></code-editor>
           <div class='code-limit' v-if='settingsPanel.codeLimitError'>
@@ -105,6 +105,7 @@ export default {
       scene: window.scene,
       syntaxHelpVisible: false,
       hideUI: appState.hideUI,
+      webgl2: appState.webgl2,
       shareVisible: false,
       aboutVisible: false,
       width: MIN_SETTINGS_WIDTH,
@@ -387,5 +388,9 @@ a.about-link {
   .controls-container {
     width: 100%;
   }
+}
+.wgl2 {
+  font-size: 12px;
+  color: #46b502;
 }
 </style>
