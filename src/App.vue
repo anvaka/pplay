@@ -291,6 +291,7 @@ pre.error, .gist-error {
   color: secondary-text;
   left: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   border-top: 1px solid secondary-border;
   background: window-background;
   width: 100%;
@@ -393,4 +394,5 @@ a.about-link {
   font-size: 12px;
   color: #46b502;
 }
+
 </style>
