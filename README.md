@@ -3,7 +3,7 @@
 This website allows you to play with pixels on the screen using WebGL.
 All you need to do is fill in a function that takes a point and returns its color:
 
-`f(coordinate) => color` 
+`f(coordinate) => color`
 
 You can immediately see the scene, pan and zoom around (as if it was Google Maps):
 
@@ -58,7 +58,7 @@ and output a color.
 Coordinate of a point is given by variable `vec2 p`, so you can get `p.x`, and `p.y`.
 
 The color is returned from the main function `return vec4(r, g, b, a)` - each component of this vector corresponds
-to color, and ranges between `0` and `1`. 
+to color, and ranges between `0` and `1`.
 
 Given this information, we can change the output to anything we want:
 
@@ -68,6 +68,8 @@ Here we first set color to a blue-ish color `vec4(0.1, 0.2, 0.4, 1.)`, and then 
 
 I have also used a special variable called `iFrame` - it is always equal to the current frame number (increases
 with time). So we can use a periodic function like `sin` to get animation. You can find more special variables below
+
+You can use this tool to quickly visualize [implicit curves too](https://anvaka.github.io/pplay/?tx=-0.24303482233069892&ty=1.7144410321102703&scale=0.12555393726602684&fc=float%20f%28vec2%20p%29%20%7B%0A%20%20%2F%2F%20modify%20this%20implicit%20curve%0A%20%20return%20sin%28p.x%29%20%2B%20cos%28p.y%29%3B%0A%7D%0A%0Avec4%20get_color%28vec2%20p%29%20%7B%0A%20%20return%20vec4%28abs%28%0A%20%20%20%20sign%28f%28p%29%29%20%2B%20%0A%20%20%20%20sign%28f%28p%20%2B%20dFdx%28p%29%29%29%20%2B%20%0A%20%20%20%20sign%28f%28p%20%2B%20dFdy%28p%29%29%29%29%20!%3D%203.%29%3B%0A%7D).
 
 # Extended functionality
 
@@ -85,7 +87,7 @@ uniform float iFrame;
 uniform float iTime;
 
 // Mouse (or touch) coordinates. `.xy` - current, `.zw` - last clicked.
-// Note: To translate coordinates to scene coordinates use 
+// Note: To translate coordinates to scene coordinates use
 // screen2scene(iMouse.xy) -> vec2 method.
 uniform vec4 iMouse;
 
@@ -96,7 +98,7 @@ uniform vec2 iResolution;
 ## Complex numbers math
 
 Each complex number is a 2d vector (`vec2` type). Standard GLSL multiplication/division rules cannot
-be applied to complex numbers, so we have a helper function: `c_mul(z1, z2)` and `c_div(z0, z1)` 
+be applied to complex numbers, so we have a helper function: `c_mul(z1, z2)` and `c_div(z0, z1)`
 multiplies and divides two complex numbers.
 
 Other trigonometric functions are available with prefix `c_`. (e.g. `c_sin(z)`, `c_cos(z)`, `c_tanh(z)`, and so on).
@@ -106,7 +108,7 @@ You can find the list of them all [here](https://github.com/anvaka/pplay/blob/ma
 # Query string limit
 
 By default your code is saved in the query string. However, if it exceeds `1,000` characters
-it cannot be saved (as browsers do not support long query strings). This shouldn't be a problem if you 
+it cannot be saved (as browsers do not support long query strings). This shouldn't be a problem if you
 don't want to share your code.
 
 But if you want to share what you've created you will need to save your code with `.glsl` extension
@@ -115,8 +117,8 @@ on https://gist.github.com/ and then update the query string of the PixelPlay:
 1. Delete `fc` query argument (if present)
 2. Add `gist=gistId`
 
-When you save a gist it will give you the url like this: https://gist.github.com/anvaka/0f11251039eb366630bc7ca08ce0eefd 
-- those numbers are your `gistId`. The final url will look like this: 
+When you save a gist it will give you the url like this: https://gist.github.com/anvaka/0f11251039eb366630bc7ca08ce0eefd
+- those numbers are your `gistId`. The final url will look like this:
 
 [https://anvaka.github.io/pplay/?gist=**0f11251039eb366630bc7ca08ce0eefd**&tx=0.284&ty=0.284&scale=0.471](https://anvaka.github.io/pplay/?gist=0f11251039eb366630bc7ca08ce0eefd&tx=0.284&ty=0.284&scale=0.471)
 
@@ -137,7 +139,7 @@ Immediate value is usually very "spiky", while `b` is smoothed out.
 First two rows of the texture alternate between current and previous rendering frame. On odd frame number
 row `0` represent current audio buffer, and `1` is previous buffer. On even frame number this is inverse (
 current audio signal will be in the row `1`, while previous signal is in the row `0`). This alternation is
-done to preserve CPU cycles and not move data unnecessarily. 
+done to preserve CPU cycles and not move data unnecessarily.
 
 Rows `3` and `4` are also alternating between current and previous frame, but they serve as aggregation
 mechanism:
@@ -171,7 +173,7 @@ Original row:    2    2    1    3    4    6    1    3
 ```
 
 This aggregation row is created to avoid summation and cycles in the shader. If you need to know average volume
-of the sound, you can just look at second to the last value, you don't need to 
+of the sound, you can just look at second to the last value, you don't need to
 
 ```
 (2 + 2 + 1 + 3 + 4 + 6 + 1 + 3)/8 = 2.75
@@ -219,7 +221,7 @@ see interactive play. Why desktop? Because of the following caveat:
 
 ## Caveat
 
-Keep in mind, that Apple does not support audio element analysis in iOS. 
+Keep in mind, that Apple does not support audio element analysis in iOS.
 
 # Thanks
 
