@@ -61,6 +61,11 @@ function audioInput(value, gl, unit) {
             return initPlayer(player);
           }
         });
+    } else if (value.match(/\.mp3$/)) {
+      streamUrl = value;
+      // in this mode, there is no vue app to initialize audio. Do it ourselves
+      var player = getOrMakePlayerEl();
+      return Promise.resolve(initPlayer(player));
     }
     throw new Error('non soundcloud files are not supported yet.');
   }

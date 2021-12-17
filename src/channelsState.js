@@ -76,6 +76,9 @@ module.exports = function (gl) {
     if (isSoundCloud(src)) {
       input = audioInput(src, gl, unit);
       appState.setSoundIOSWarning(true);
+    } else if (src.match(/\.mp3$/)) {
+      input = audioInput(src, gl, unit);
+      appState.setSoundIOSWarning(true);
     } else if (isImage(src)) {
       input = imageInput(src, gl, unit);
     } 
