@@ -55,7 +55,6 @@ import CodeEditor from './components/CodeEditor';
 import Channels from './components/Channels';
 import Share from './components/Share';
 import About from './components/About';
-import HelpIcon from './components/HelpIcon';
 import Syntax from './components/Syntax';
 
 var MIN_SETTINGS_WIDTH = 456;
@@ -69,7 +68,6 @@ var appState = require('./appState');
 export default {
   name: 'App',
   components: {
-    HelpIcon,
     Channels,
     Syntax,
     CodeEditor,

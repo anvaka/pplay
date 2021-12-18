@@ -69,7 +69,7 @@ export default {
     onFilePickerChanged(e) {
       // TODO: Implement me
       var files = e.target.files;
-      loadInput(files[0]);
+      this.loadInput(files[0]);
       // Try to reset the type
       e.target.type = 'input';
       e.target.type = 'file';

@@ -6,7 +6,7 @@
         <h2>Share link</h2>
         <a href='#' @click.prevent='hide' class='close-btn close-modal' title='close'>x</a>
         <div class='providers'>
-          <a v-for='provider in providers' v-html='provider.svg' class='logo close-modal' :href='getLink(provider.name)' :style='{background: provider.color}'
+          <a v-for='provider in providers' :key="provider.name" v-html='provider.svg' class='logo close-modal' :href='getLink(provider.name)' :style='{background: provider.color}'
             target='_blank' :title='provider.name'>
           </a>
         </div>
@@ -73,7 +73,7 @@ export default {
         shortener(this.enteredUrl).then((shortUrl) => {
           this.shortenState = 'canShorten';
           this.enteredUrl = shortUrl;
-        }).catch(err => {
+        }).catch(() => {
           this.shortenState = 'error'
         });
       }

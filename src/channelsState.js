@@ -134,7 +134,7 @@ function imageInput(value, gl, unit) {
 
   return api;
 
-  function render(program, frameNumber) {
+  function render(program) {
     if (!texture) return;
 
     if (needsBinding) {

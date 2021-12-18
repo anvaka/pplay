@@ -1,3 +1,4 @@
+/* eslint-disable no-redeclare */
 /**
  * This is work in progress. Mostly loads soundcloud sound stream and makes
  * it accessible via texture to a shared.
@@ -6,7 +7,6 @@
  */
 var isSoundCloud = require('./isSoundCloud');
 var loadSoundCloudStream = require('./loadSoundCloudStream');
-var binHistory = require('./binHistory');
 var appState = require('../appState');
 
 module.exports = audioInput;

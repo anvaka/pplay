@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Copyright (C) 2014 hughsk, MIT license
  * https://github.com/hughsk/glsl-editor/blob/master/LICENSE.md

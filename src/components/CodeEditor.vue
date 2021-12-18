@@ -18,7 +18,7 @@ Did you forget to add a dot symbol? E.g. <span class='hl'>10</span> should be <s
 import bus from '../bus';
 import { codemirror } from 'vue-codemirror-lite';
 var CodeMirror = require('codemirror/lib/codemirror.js')
-var toggleComment = require('codemirror/addon/comment/comment.js');
+require('codemirror/addon/comment/comment.js');
 function toggleGLSLComment(cm) {
   cm.toggleComment({
     indent: true,
