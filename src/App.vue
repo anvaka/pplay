@@ -9,7 +9,7 @@
     </div>
 
     <div class='controls-container' v-if='webGLEnabled ' :style='getControlsContainerStyle()' ref='controls'>
-      <div class='controls'>
+      <div class='app-controls'>
         <a href='#' @click.prevent='toggleSettings' class='action'>{{(settingsPanel.collapsed ? "Edit..." : "Close Editor")}}</a>
         <a href='#' @click.prevent='generateNewFunction'>Randomize</a>
         <a href='#' @click.prevent='openShareDialog' class='share-btn' title='Share'>
@@ -248,7 +248,7 @@ pre.error, .gist-error {
   margin: 0px -8px;
   padding: 0 8px;
 }
-.controls {
+.app-controls {
   display: flex;
   flex-shrink: 0;
   height: control-bar-height;
@@ -373,7 +373,7 @@ a.about-link {
 }
 
 @media (max-width: small-screen) {
-  .controls {
+  .app-controls {
     a.share-btn {
       flex: none;
       display: flex;

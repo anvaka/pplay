@@ -6,12 +6,14 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "start": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "codemirror": "^5.33.0",
     "glsl-parser": "git+https://github.com/anvaka/glslx.git#glsl-parser",
+    "monaco-editor": "^0.31.1",
     "ngraph.events": "1.2.1",
     "panzoom": "^9.4.1",
     "query-state": "^4.1.0",
@@ -26,8 +28,9 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11",
+    "monaco-editor-webpack-plugin": "^7.0.1",
     "stylus": "^0.54.8",
-    "stylus-loader": "^3.0.2"
+    "stylus-loader": "^3.0.2",
+    "vue-template-compiler": "^2.6.11"
   }
 }
