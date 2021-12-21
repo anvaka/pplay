@@ -4,9 +4,11 @@ const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 module.exports = {
   publicPath: '',
   configureWebpack: {
+    devtool: 'source-map',
     plugins: [
       new MonacoWebpackPlugin({
         languages: [],
+        features: []
         //features: ['!accessibilityHelp', '!bracketMatching', '!caretOperations', '!clipboard']
       })
     ]
