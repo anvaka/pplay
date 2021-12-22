@@ -1,13 +1,19 @@
 // based on https://github.com/rust-num/num-complex/blob/master/src/lib.rs
 // Copyright 2013 The Rust Project Developers. MIT license
 // Ported to GLSL by Andrei Kashcha (github.com/anvaka), available under MIT license as well.
+
+
+// Returns a complex number z = 1 + i * 0.
 vec2 c_one() { return vec2(1., 0.); }
+
+// Returns a complex number z = 0 + i * 1.
 vec2 c_i() { return vec2(0., 1.); }
 
 float arg(vec2 c) {
   return atan(c.y, c.x);
 }
 
+// Returns conjugate of a complex number.
 vec2 c_conj(vec2 c) {
   return vec2(c.x, -c.y);
 }
@@ -20,41 +26,42 @@ vec2 c_to_polar(vec2 c) {
   return vec2(length(c), atan(c.y, c.x));
 }
 
-/// Computes `e^(c)`, where `e` is the base of the natural logarithm.
+// Computes `e^(c)`, where `e` is the base of the natural logarithm.
 vec2 c_exp(vec2 c) {
   return c_from_polar(exp(c.x), c.y);
 }
 
 
-/// Raises a floating point number to the complex power `c`.
+// Raises a floating point number to the complex power `c`.
 vec2 c_exp(float base, vec2 c) {
   return c_from_polar(pow(base, c.x), c.y * log(base));
 }
 
-/// Computes the principal value of natural logarithm of `c`.
+// Computes the principal value of natural logarithm of `c`.
 vec2 c_ln(vec2 c) {
   vec2 polar = c_to_polar(c);
   return vec2(log(polar.x), polar.y);
 }
 
-/// Returns the logarithm of `c` with respect to an arbitrary base.
+// Returns the logarithm of `c` with respect to an arbitrary base.
 vec2 c_log(vec2 c, float base) {
   vec2 polar = c_to_polar(c);
   return vec2(log(polar.r), polar.y) / log(base);
 }
 
+// Computes the square root of complex number `c`.
 vec2 c_sqrt(vec2 c) {
   vec2 p = c_to_polar(c);
   return c_from_polar(sqrt(p.x), p.y/2.);
 }
 
-/// Raises `c` to a floating point power `e`.
+// Raises `c` to a floating point power `e`.
 vec2 c_pow(vec2 c, float e) {
   vec2 p = c_to_polar(c);
   return c_from_polar(pow(p.x, e), p.y*e);
 }
 
-/// Raises `c` to a complex power `e`.
+// Raises `c` to a complex power `e`.
 vec2 c_pow(vec2 c, vec2 e) {
   vec2 polar = c_to_polar(c);
   return c_from_polar(
@@ -63,6 +70,7 @@ vec2 c_pow(vec2 c, vec2 e) {
   );
 }
 
+// Computes the complex product of `self * other`.
 vec2 c_mul(vec2 self, vec2 other) {
     return vec2(self.x * other.x - self.y * other.y, 
                 self.x * other.y + self.y * other.x);
