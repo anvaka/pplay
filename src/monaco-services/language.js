@@ -23,7 +23,7 @@ export const glslMonacoLanguage = {
   tokenProvider: {
     defaultToken: "invalid",
     tokenPostfix: ".glsl",
-    types: [
+    typeKeywords: [
       "bool", "bvec2", "bvec3", "bvec4", "float", "int", "ivec2", "ivec3", "ivec4", 
       "mat2", "mat2x2", "mat2x3", "mat2x4", "mat3", "mat3x2", "mat3x3", "mat3x4", "mat4", "mat4x2", "mat4x3", "mat4x4",
       "uint", "uvec2", "uvec3", "uvec4", "vec2", "vec3", "vec4", "void",
@@ -62,55 +62,76 @@ export const glslMonacoLanguage = {
       { token: "delimiter.curly", open: "{", close: "}" },
       { token: "delimiter.parenthesis", open: "(", close: ")" },
       { token: "delimiter.square", open: "[", close: "]" },
-      { token: "delimiter.angle", open: "<", close: ">" },
+      // { token: "delimiter.angle", open: "<", close: ">" },
     ],
     symbols: /[=><!~?:&|+\-*\/\^%]+/,
-    integersuffix: /[uU]?/,
+    digits: /\d+/,
+    hexdigits: /[[0-9a-fA-F]+(_+[0-9a-fA-F]+)*/,
+    unsignedSuffix: /[uU]?/,
     floatsuffix: /[fF]?/,
     func: /[a-zA-Z_0-9]+/,
 
     tokenizer: {
       root: [
-        [/\d*\d+[eE]([\-+]?\d+)?(@floatsuffix)/, "number.float"],
-        [/\d*\.\d+([eE][\-+]?\d+)?(@floatsuffix)/, "number.float"],
-        [/0[xX][0-9a-fA-F']*[0-9a-fA-F](@integersuffix)/, "number.hex"],
-        [/([+-]?)\d+(@integersuffix)/, "number.integer"],
+        [/[{}]/, 'delimiter.bracket'],
+        { include: 'common' }
+      ],
+      common: [
         [
           /#(version|define|undef|ifdef|ifndef|else|elsif|endif)/,
-          "keyword.directive",
+          'keyword.directive',
         ],
-        [/\$[a-zA-Z0-9]*/, "regexp"],
-        [/\s[A-Z_][A-Z_0-9]*/, "constant"],
-        [/gl_[a-zA-Z_0-9]+/, "keyword.gl"],
-        [
-          /([a-zA-Z_][a-zA-Z_0-9]*)/,
-          {
-            cases: {
-              "@types": { token: "keyword.$0" },
-              "@keywords": { token: "keyword.$0" },
-              "@functions": { token: "keyword.builtins.$0" },
-              "@default": "identifier",
-            },
-          },
-        ],
-        [/(\d+(\.\d+))/, "number.float"],
-        [/\d+/, "keyword"],
+        // identifiers and keywords
+        [/[a-z_$][\w$]*/, {
+          cases: {
+            '@typeKeywords': 'keyword',
+            '@keywords': 'keyword',
+            '@functions': 'key',
+            '@default': 'identifier'
+          }
+        }],
+        // Show capital letters in distinct style
+        [/[A-Z][\w\$]*/, 'type.identifier'],
+        { include: '@whitespace' },
 
-        [/\/\/.+/, "comment"],
-        [/\/\*.+?(\*\/)/, "comment"],
+        [/[()\[\]]/, '@brackets'],
 
-        [/[{}()\[\]]/, "@brackets"],
-        [
-          /@symbols/,
-          {
-            cases: {
-              "@operators": "delimiter",
-              "@default": "",
-            },
-          },
-        ],
-        [/[;,.]/, "delimiter"],
+        [/@symbols/, {
+          cases: {
+            '@operators': 'delimiter',
+            '@default': ''
+          }
+        }],
+
+        // numbers
+        [/(@digits)[eE]([\-+]?(@digits))?/, 'number.float'],
+        [/(@digits)?\.(@digits)([eE][\-+]?(@digits))?/, 'number.float'],
+        [/(@digits)?\.(([eE][\-+]?)?(@digits))?/, 'number.float'],
+        [/0[xX](@hexdigits)/, 'number.hex'],
+        [/(@digits)/, 'number.hex'],
+
+        // delimiter: after number because of .\d floats
+        [/[;,.]/, 'delimiter'],
       ],
+      whitespace: [
+        [/[ \t\r\n]+/, ''],
+        [/\/\*\*(?!\/)/, 'comment.doc', '@jsdoc'],
+        [/\/\*/, 'comment', '@comment'],
+        [/\/\/.*$/, 'comment'],
+      ],
+
+      comment: [
+        [/[^\/*]+/, 'comment'],
+        [/\*\//, 'comment', '@pop'],
+        [/[\/*]/, 'comment']
+      ],
+
+      jsdoc: [
+        [/[^\/*]+/, 'comment.doc'],
+        [/\*\//, 'comment.doc', '@pop'],
+        [/[\/*]/, 'comment.doc']
+      ],
+
     },
   },
 };
