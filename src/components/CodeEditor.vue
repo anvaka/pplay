@@ -1,49 +1,35 @@
 <template>
 <div class='glsl-editor'>
-  <codemirror v-model='model.code' ref='editor' :options="{
-    viewportMargin: Infinity,
-    theme: 'glsl',
-    mode: 'glsl',
-  }"></codemirror>
+  <editor v-model='model' @loaded='onEditorLoaded'></editor>
+  <textarea v-model="model.code" v-if="isLoading" class='quick-edit' spellcheck='false'></textarea>
+
   <div class='error-container'>
     <pre v-if='model.error' class='error hl'>{{model.error}}</pre>
-    <pre v-if='model.errorDetail' class='error detail'>{{model.errorDetail}}<span v-if='model.isFloatError'>
-Did you forget to add a dot symbol? E.g. <span class='hl'>10</span> should be <span class='hl'>10.</span> and <span class='hl'>42</span> should be <span class='hl'>42.</span>
-</span></pre>
+    <pre v-if='model.errorDetail' class='error detail'>{{model.errorDetail}}</pre>
   </div> 
 </div>
 </template>
 
 <script>
-import bus from '../bus';
-import { codemirror } from 'vue-codemirror-lite';
-var CodeMirror = require('codemirror/lib/codemirror.js')
-require('codemirror/addon/comment/comment.js');
-function toggleGLSLComment(cm) {
-  cm.toggleComment({
-    indent: true,
-    lineComment: '//'
-  });
-}
-
-require('./glslmode')(CodeMirror);
+import appState from '../appState';
+let defaultEditor = isMobile ? 'CodeMirror' : 'CodeMirror';
+let useMonaco =  defaultEditor === 'Monaco' || appState.qs.get('monaco');
 
 export default {
   name: 'CodeEditor',
   props: ['model'],
+  data() {
+    return {
+      isLoading: true
+    };
+  },
   components: {
-    codemirror
+    editor: getMostAppropriateEditor
   },
-  mounted() {
-    bus.on('settings-collapsed', refreshEditor, this);
-
-    this.$refs.editor.editor.setOption('extraKeys', {
-      'Cmd-/': toggleGLSLComment,
-      'Ctrl-/': toggleGLSLComment
-    });
-  },
-  beforeDestroy() {
-    bus.off('settings-collapsed', refreshEditor, this);
+  methods: {
+    onEditorLoaded() {
+      this.isLoading = false;
+    }
   },
   watch: {
     'model.code': function() {
@@ -61,19 +47,31 @@ export default {
   }
 }
 
-function refreshEditor(isCollapsed) {
-  // Code mirror sometimes is not visible https://stackoverflow.com/questions/8349571/codemirror-editor-is-not-loading-content-until-clicked
-  if (!isCollapsed) {
-    setTimeout(() => {
-      this.$refs.editor.editor.refresh()
-    }, 10);
-  }
+function getMostAppropriateEditor() {
+  return new Promise((resolve) => {
+    if (useMonaco) {
+      require.ensure('./MonacoEditor.vue', () => {
+        resolve(require('./MonacoEditor.vue'));
+      });
+    } else {
+      require.ensure('./CodeMirrorEditor.vue', () => {
+        resolve(require('./CodeMirrorEditor.vue'));
+      });
+    }
+  });
+}
+
+function isMobile() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 </script>
+
 <style lang="stylus">
-.glsl-editor {
-  @import "../styles/glsl-theme.styl"
-  
-  padding-bottom: 8px;
+.quick-edit {
+  width: 100%;
+  height: 300px;
+  background: #061838;
+  color: white;
+  font-size: 14px;
 }
 </style>

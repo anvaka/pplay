@@ -19,9 +19,9 @@ let ide, inputSource;
 // glsl-parser is ~179KB uncompressed, we don't want to wait until it is downloaded.
 // So we load it asynchronously...
 // TODO: Replace this with a real module:
-require.ensure('my-parser/dist/src/exports/ide.js', () => {
+require.ensure('wgl2npm/dist/src/exports/ide.js', () => {
   // ... and replace the naive parser with the real one, when ready.
-  let {compileIDE} = require('my-parser/dist/src/exports/ide.js');
+  let {compileIDE} = require('wgl2npm/dist/src/exports/ide.js');
   const {getSharedPrefix} = require('../util/shaders/getFragmentCode.js');
   const wglAPI = require('../util/shaders/wgl2.glsl');
 

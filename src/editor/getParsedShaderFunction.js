@@ -2,34 +2,10 @@
  * This module parses user defined shader code.
  */
 
-var bus = require('../bus');
+const checkGLSL = require('./parserServer.js');
 var pragmaParse = require('./pragmaParser');
 var getFragmentCode = require('../util/shaders/getFragmentCode');
 const appState = require('../appState');
-
-// This is naive parser that is being used until the real `glsl-parser`
-// is loaded asynchronously. This parser assumes there are no errors
-// TODO: maybe I should be more careful here?
-var glslParser = {
-  check(code) {
-    return {
-      code,
-      log: {
-        errorCount: 0
-      }
-    };
-  }
-};
-
-// glsl-parser is ~179KB uncompressed, we don't want to wait until it is downloaded.
-// So we load it asynchronously...
-require.ensure('glsl-parser', () => {
-  // ... and replace the naive parser with the real one, when ready.
-  glslParser = require('glsl-parser');
-
-  // notify interested parties, so that they can recheck code if they wish.
-  bus.fire('glsl-parser-ready'); 
-});
 
 /**
  * Given a string, verifies that it is a valid glsl code,
@@ -47,7 +23,7 @@ module.exports = function getParsedShaderFunction(shaderCode) {
 
     var parsedCode = pragmaParseResult.getCode();
 
-    var parserResult = glslParser.check(parsedCode); //{ globals: complexGlobals });
+    var parserResult = checkGLSL(parsedCode); //{ globals: complexGlobals });
     parserResult.code = parsedCode;
     parserResult.main = shaderCode;
 

@@ -93,7 +93,8 @@ var appState = {
   addChannel,
   removeChannel,
   getActiveChannels,
-  setSoundIOSWarning
+  setSoundIOSWarning,
+  qs
 }
 
 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;

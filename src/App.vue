@@ -353,6 +353,10 @@ pre.error, .gist-error {
     }
   }
 }
+//class editor-widget suggest-widget shows-details visible
+.monaco-editor .suggest-details>.monaco-scrollable-element>.body>.header>.type.auto-wrap {
+  white-space: pre;
+}
 
 a.about-link {
   position: absolute;

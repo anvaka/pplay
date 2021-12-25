@@ -4,6 +4,7 @@ import {debounce} from '../util/utils.js';
 
 var eventify = require('ngraph.events');
 const checkGLSL = require('../editor/parserServer.js');
+const NO_SUGGESTIONS = undefined;
 
 const CompletionKindToSuggestionKind = {
   variable: monaco.languages.CompletionItemKind.Variable,
@@ -20,6 +21,12 @@ monaco.languages.registerCompletionItemProvider('glsl', {
   triggerCharacters: ['.'],
   provideCompletionItems(model, position) {
     const contents = model.getValue();
+    if (contents.length === 0) return NO_SUGGESTIONS;
+    let line = model.getLineContent(position.lineNumber);
+    let previousCharacter = position.column - 2; // they are 1-based
+    if (line[previousCharacter] === '.' && isDigit(line[previousCharacter - 1])) {
+      return NO_SUGGESTIONS;
+    }
     let res = checkGLSL(contents);
 
     let q = res.completionQuery({
@@ -186,4 +193,8 @@ export function createEditor(container, code) {
   function dispose() {
     editor.dispose();
   }
+}
+
+function isDigit(c) {
+  return c >= '0' && c <= '9';
 }
